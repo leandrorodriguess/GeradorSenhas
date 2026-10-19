@@ -1,3 +1,7 @@
+<p align="center">
+  <a href="https://akcit.ufg.br/"><img src="app/static/img/logo-akcit.png" alt="AKCIT — Centro de Competência EMBRAPII em Tecnologias Imersivas" width="320"></a>
+</p>
+
 # SecurePass — Gerador de Senhas Seguras
 
 Aplicação em Python que gera senhas aleatórias e **criptograficamente seguras** a partir de critérios configuráveis. Oferece três interfaces que compartilham **o mesmo núcleo de regras de negócio**:
@@ -6,7 +10,12 @@ Aplicação em Python que gera senhas aleatórias e **criptograficamente seguras
 - **API REST** (`POST /api/v1/passwords/generate`);
 - **CLI** (`python -m app.cli`).
 
-> Projeto acadêmico de laboratório (Pós-graduação — UFG), focado em fundamentos de Engenharia de Software: Clean Code, TDD, separação de responsabilidades e segurança de aplicações.
+<p align="center">
+  <img src="docs/img/demo-web.gif" alt="Demonstração animada: ajuste do comprimento com a entropia sendo atualizada, desmarcação de caracteres especiais, geração de 3 senhas, cópia de uma senha e de todas, e geração de um novo lote" width="720">
+  <br><em>Interface web em execução (veja a <a href="#demonstração-visual">demonstração passo a passo</a>).</em>
+</p>
+
+> Projeto acadêmico de laboratório (Pós-graduação — UFG / [AKCIT](https://akcit.ufg.br/)), focado em fundamentos de Engenharia de Software: Clean Code, TDD, separação de responsabilidades e segurança de aplicações.
 
 ---
 
@@ -21,7 +30,7 @@ Aplicação em Python que gera senhas aleatórias e **criptograficamente seguras
 7. [Pré-requisitos](#7-pré-requisitos)
 8. [Instalação](#8-instalação)
 9. [Inicialização](#9-inicialização)
-10. [Uso pela web](#10-uso-pela-web)
+10. [Uso pela web](#10-uso-pela-web) (inclui usabilidade e identidade visual AKCIT)
 11. [Uso pela CLI](#11-uso-pela-cli)
 12. [Uso da API](#12-uso-da-api)
 13. [Testes](#13-testes)
@@ -61,6 +70,8 @@ Senhas criadas por pessoas tendem a ser curtas, previsíveis e reutilizadas. Mui
 | RF09 | Interface web responsiva, cópia, regeneração, validação e indicador de entropia | `app/templates`, `app/static` |
 | RF10 | CLI com mensagens claras e códigos de saída | `app/cli.py` |
 | RF11 | `POST /api/v1/passwords/generate` com validação Pydantic | `app/api/routes.py`, `app/schemas/password.py` |
+| Extra | Opção de excluir caracteres ambíguos `0 O 1 l I` (web, API e CLI) | `AMBIGUOUS_CHARACTERS`, `select_character_sets(exclude_ambiguous=...)` |
+| Extra | Perfis rápidos, ocultar/limpar senhas, cores por tipo de caractere, tema manual, dicas por nível de entropia | `app/main.py` (`PRESETS`), `app/templates`, `app/static` |
 
 ## 4. Tecnologias
 
@@ -129,8 +140,11 @@ GeradorSenhas/
 │   ├── templates/
 │   │   └── index.html
 │   └── static/
-│       ├── css/style.css
+│       ├── css/style.css          # Paleta de cores AKCIT
+│       ├── img/                   # Imagens do AKCIT: logos (barra superior e README) e favicon
 │       └── js/script.js
+├── docs/
+│   └── img/                       # Capturas de tela e GIF de demonstração do README
 ├── tests/
 │   ├── conftest.py
 │   ├── test_password_generator.py
@@ -183,11 +197,47 @@ python -m pip install -r requirements.txt
 
 ## 9. Inicialização
 
-```bash
-make run
-# ou, sem Make:
-python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+Sempre a partir da raiz do projeto (pasta `GeradorSenhas`), depois de concluir a instalação (seção 8). Escolha uma das opções:
+
+### Opção A — ativando o ambiente virtual (recomendada)
+
+Ative o `.venv` e inicie o servidor com o Python do ambiente:
+
+| Sistema | Comandos |
+|---|---|
+| Windows (PowerShell) | `.\.venv\Scripts\Activate.ps1`<br>`python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000` |
+| Windows (cmd) | `.venv\Scripts\activate.bat`<br>`python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000` |
+| Linux/macOS | `source .venv/bin/activate`<br>`python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000` |
+
+Com o ambiente ativado, o terminal mostra `(.venv)` no início da linha. Esse é o comando validado no Windows (PowerShell). Para sair do ambiente depois de encerrar o servidor, use `deactivate`.
+
+### Opção B — usando o Python do `.venv` diretamente (sem ativar)
+
+Útil quando a ativação é bloqueada pela política de execução do PowerShell ou em scripts:
+
+```powershell
+# Windows (PowerShell ou cmd)
+.\.venv\Scripts\python.exe -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 ```
+
+```bash
+# Linux/macOS
+.venv/bin/python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+```
+
+### Opção C — Make ou VS Code
+
+- `make run` (requer GNU Make; executa o mesmo comando da opção A).
+- VS Code: *Run and Debug* → **SecurePass: servidor web** → F5 (seção 15), que usa o interpretador do `.venv`.
+
+### Observações
+
+- Usar `python -m uvicorn` (em vez do executável `uvicorn`) garante que o Uvicorn do ambiente virtual seja usado, mesmo que ele não esteja no `PATH`.
+- Se aparecer `No module named uvicorn`, o Python em uso não é o do `.venv`: ative o ambiente (opção A) ou use a opção B, e confirme que as dependências foram instaladas.
+- `--reload` reinicia o servidor ao salvar arquivos (uso em desenvolvimento). Para outra porta, troque `--port 8000`.
+- Para encerrar o servidor, pressione `Ctrl+C` no terminal.
+
+Com o servidor em execução:
 
 - Interface web: <http://127.0.0.1:8000/>
 - Documentação interativa (Swagger UI): <http://127.0.0.1:8000/docs>
@@ -195,21 +245,119 @@ python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 
 ## 10. Uso pela web
 
-1. Acesse <http://127.0.0.1:8000/>.
-2. Ajuste o comprimento (controle deslizante ou campo numérico, 8–128).
-3. Marque as categorias desejadas (pelo menos uma).
-4. Defina a quantidade de senhas (1–10).
-5. Observe o indicador de **entropia estimada**, atualizado em tempo real.
-6. Clique em **Gerar senhas**. Cada senha tem um botão **Copiar**.
-7. Use **Gerar novas senhas** para gerar outro lote com as mesmas opções.
+<p align="center">
+  <img src="docs/img/00-uso-web.png" alt="SecurePass em execução em http://127.0.0.1:8000 com três senhas de 16 caracteres geradas" width="720">
+  <br><em>Aplicação em execução em <code>http://127.0.0.1:8000/</code> após gerar 3 senhas com as opções padrão.</em>
+</p>
 
-Entradas inválidas (comprimento fora da faixa, quantidade inválida, nenhuma categoria) exibem mensagens claras antes do envio; o servidor valida novamente e suas mensagens de erro também são exibidas.
+Com o servidor em execução (seção 9):
+
+A interface é uma **página única em duas colunas**: as configurações ficam à esquerda e as senhas geradas à direita, sob uma barra superior compacta com o logo do AKCIT ao lado do nome SecurePass. Em notebooks e monitores (a partir de 1280×720) tudo cabe na janela, sem barra de rolagem; com 10 senhas longas, apenas a lista de senhas rola por dentro do cartão. Em telas estreitas (celular) as colunas se empilham e a página rola normalmente.
+
+1. Acesse <http://127.0.0.1:8000/>.
+2. Opcional: escolha um **perfil rápido**, que preenche as opções em um clique (o perfil ativo fica marcado com ✓):
+
+   | Perfil | Configuração | Quando usar |
+   |---|---|---|
+   | Padrão | 16 caracteres, todas as categorias | Uso geral |
+   | Máxima segurança | 32 caracteres, todas as categorias | Contas críticas, senhas mestras |
+   | Sem símbolos | 20 caracteres, sem caracteres especiais | Sites que não aceitam símbolos |
+   | Fácil de digitar | 16 caracteres, sem `0 O 1 l I` | Senhas que serão lidas e digitadas em outro aparelho |
+
+3. Ajuste o comprimento (controle deslizante ou campo numérico, 8–128).
+4. Marque as categorias desejadas (pelo menos uma) e, se quiser, **Evitar caracteres ambíguos**.
+5. Defina a quantidade de senhas (1–10).
+6. Observe o indicador de **entropia estimada**: a etiqueta muda de cor conforme o nível (fraca, razoável, forte, muito forte) e uma dica explica para que tipo de conta a senha é adequada.
+7. Clique em **Gerar senhas** (ou pressione **Enter**). Cada senha aparece colorida por tipo de caractere (números em azul, símbolos em lilás) e tem um botão **Copiar**; com mais de uma senha aparece também **Copiar todas** (uma por linha).
+8. Use **Ocultar senhas** ao compartilhar a tela (o botão Copiar continua funcionando), **Gerar novas senhas** para outro lote, **Limpar senhas** para tirá-las da tela ao terminar, ou **Restaurar padrões** para voltar à configuração inicial.
+9. O botão de tema, no canto direito da barra superior, alterna entre **Automático** (segue o sistema), **Claro** e **Escuro**.
+
+Entradas inválidas (comprimento fora da faixa, quantidade inválida, nenhuma categoria) exibem mensagens junto ao campo antes do envio; o servidor valida novamente e suas mensagens de erro também são exibidas.
+
+### Demonstração visual
+
+Capturas feitas com a aplicação em execução (`python -m uvicorn app.main:app`) no Microsoft Edge. As senhas que aparecem nas imagens são aleatórias, foram geradas só para a demonstração e não devem ser usadas.
+
+**1. Página inicial.** Configurações à esquerda e área de resultado à direita, que indica onde as senhas vão aparecer. Os valores padrão (16 caracteres, quatro categorias, 1 senha) já resultam em ≈ 99 bits de entropia estimada, e o indicador é atualizado enquanto as opções mudam.
+
+<p align="center"><img src="docs/img/01-pagina-inicial.png" alt="Página inicial do SecurePass em duas colunas: logo do AKCIT na barra superior, opções à esquerda e área de resultado vazia à direita" width="640"></p>
+
+**2. Validação.** Com comprimento 4 e nenhuma categoria marcada, cada campo mostra sua mensagem de erro, a borda fica destacada e o foco vai para o primeiro campo inválido. Nenhuma requisição é enviada.
+
+<p align="center"><img src="docs/img/02-validacao.png" alt="Formulário com mensagens de erro junto ao campo de comprimento e às categorias" width="640"></p>
+
+**3. Senhas geradas.** Com 20 caracteres e 3 senhas, o resultado aparece na coluna da direita, com cada caractere colorido por tipo e uma legenda. Cada senha tem o botão **Copiar** (com a confirmação "Copiado!"), e há também **Copiar todas**, **Gerar novas senhas** e **Limpar senhas**.
+
+<p align="center"><img src="docs/img/03-senhas-geradas.png" alt="Três senhas geradas, a primeira com o botão mostrando Copiado" width="640"></p>
+
+**4. Senhas ocultas.** Com **Ocultar senhas**, os caracteres são trocados por pontos — útil ao compartilhar a tela. A cópia continua funcionando.
+
+<p align="center"><img src="docs/img/06-senhas-ocultas.png" alt="Senhas geradas ocultadas por pontos, com o botão Mostrar senhas" width="640"></p>
+
+**5. Tema escuro e celular.** A página segue o tema do sistema operacional (ou o escolhido no botão de tema) e se adapta a telas estreitas: as colunas se empilham, os botões ocupam a largura toda e não há rolagem horizontal.
+
+<p align="center">
+  <img src="docs/img/04-tema-escuro.png" alt="Página no tema escuro com senhas geradas" width="460">
+  &nbsp;
+  <img src="docs/img/05-celular.png" alt="Página em tela de celular de 375 pixels com duas senhas geradas" width="190">
+</p>
+
+### Boas práticas de usabilidade e acessibilidade
+
+| Prática | Como foi aplicada |
+|---|---|
+| Erros junto ao campo | Cada campo tem sua mensagem (⚠) ligada por `aria-describedby`; a borda do campo fica destacada (`aria-invalid`). |
+| Foco no problema | Ao enviar com erros, o foco vai para o primeiro campo inválido. |
+| Validação sem incomodar | Os erros só aparecem após a primeira tentativa de envio; a partir daí somem assim que o valor é corrigido. |
+| Feedback de estado | Botão mostra "Gerando…"; a lista fica esmaecida durante a requisição (`aria-busy`); cópia confirma com "Copiado!". |
+| Leitores de tela | Região `role="status"` anuncia "3 senhas geradas", "Senha 2 copiada", "Opções restauradas" etc. |
+| Foco após a ação | Depois de gerar, o foco e a rolagem vão para "Senhas geradas"; ao regenerar, o foco permanece no botão usado. |
+| Botões não perdem o foco | Durante o carregamento usa-se `aria-disabled` em vez de `disabled`, que tiraria o foco do teclado. |
+| Controle e liberdade | Botão **Restaurar padrões**; os valores padrão já produzem senhas fortes (texto de orientação no topo do formulário). |
+| Cópia facilitada | **Copiar todas**; um clique na senha seleciona o texto inteiro; se a área de transferência não estiver disponível (fora de HTTPS/localhost), o texto é selecionado e a página orienta a usar Ctrl+C. |
+| Navegação por teclado | Link "Pular para o gerador" visível ao pressionar Tab; foco sempre visível (`:focus-visible`). |
+| Página única | Duas colunas (configurações → resultado) que cabem na janela de notebooks e monitores, sem rolagem da página; a pessoa vê as opções e as senhas ao mesmo tempo. A área de resultado mostra uma orientação enquanto está vazia. |
+| Alvos de clique e toque | Botões, campos e caixas de seleção com no mínimo 36 px com mouse (acima dos 24 px da WCAG 2.5.8) e 44 px em telas de toque (`pointer: coarse`); no celular os botões ocupam a largura toda. |
+| Movimento reduzido | Com `prefers-reduced-motion`, a rolagem é instantânea e não há animações. |
+| Legibilidade | Senhas em fonte monoespaçada maior, com espaçamento entre letras e **cores por tipo de caractere** (com legenda). |
+| Atalhos para tarefas comuns | **Perfis rápidos** aplicam combinações frequentes em um clique; o perfil que corresponde às opções atuais fica destacado (`aria-pressed`). |
+| Prevenção de erros | **Evitar caracteres ambíguos** (`0 O 1 l I`) para senhas que serão digitadas manualmente; a entropia é recalculada com o conjunto menor. |
+| Orientação contextual | A etiqueta de entropia muda de cor por nível e uma dica explica o uso adequado ("Para contas importantes, prefira 80 bits ou mais"). |
+| Privacidade na tela | **Ocultar senhas** (útil ao compartilhar a tela; a cópia continua funcionando e o estado vale também para novos lotes) e **Limpar senhas** ao terminar. |
+| Preferência visual | Botão de tema **Automático / Claro / Escuro** na barra superior. A escolha vale para a visita atual: a página não grava nada no navegador (ver seção 16). |
+
+Essas práticas foram verificadas com um teste E2E descartável no Microsoft Edge headless (via Chrome DevTools Protocol), cobrindo erros inline, foco, anúncios, restaurar padrões, copiar todas (incluindo o caminho alternativo), perfis rápidos, exclusão de ambíguos em 10 senhas de 128 caracteres, cores por tipo, ocultar/mostrar, limpar, os três temas (inclusive "Claro" sobrepondo o sistema escuro), ausência de rolagem horizontal em 375 px, altura mínima dos alvos de toque e ausência de erros no console.
+
+### Identidade visual (AKCIT)
+
+A interface segue o esquema de cores e o logotipo do [AKCIT — Centro de Competência EMBRAPII em Tecnologias Imersivas](https://akcit.ufg.br/):
+
+| Uso | Cor | Origem no site do AKCIT |
+|---|---|---|
+| Barra superior e rodapé (degradê) | `#19032B` → `#431980` | Fundo roxo-escuro do site |
+| Cor primária (botões, títulos, controles) | `#431980` (claro) / `#BC5AFF` (escuro) | Roxo e lilás de destaque |
+| Detalhe dos cartões | `#278CFD` | Azul de destaque |
+| Fundo da página | `#F8EFFF` (claro) / `#19032B` (escuro) | Tons de fundo do site |
+| Fonte | Montserrat (se instalada; senão, fonte do sistema) | Fonte do site |
+
+Imagens baixadas de <https://akcit.ufg.br/> e salvas em `app/static/img/`:
+
+| Arquivo | Original no site | Uso | Tratamento |
+|---|---|---|---|
+| `logo-akcit-branca.png` | `/logoAkcitBranca.png` | Barra superior, à esquerda de "SecurePass" (link para o AKCIT) | Recortado e reduzido para 480 px |
+| `logo-akcit.png` | `/logoAkcit.png` | Topo deste README | Recortado e reduzido para 480 px |
+| `favicon.ico` | `/favicon.ico` | Ícone da aba do navegador | Sem alteração |
+
+- As imagens são **servidas localmente** porque a CSP da página só permite recursos da própria origem (`img-src 'self'`); pelo mesmo motivo a fonte Montserrat não é carregada de CDN.
+- Os temas claro e escuro acompanham a preferência do sistema operacional (`prefers-color-scheme`), e o botão de tema permite escolher manualmente.
+- O logotipo é marca do AKCIT/UFG e é usado aqui apenas para identificar o vínculo acadêmico do projeto.
 
 ## 11. Uso pela CLI
 
 ```bash
 python -m app.cli --length 20 --uppercase --lowercase --numbers --symbols --count 3
 python -m app.cli -l 12 -L -D          # atalhos: -U -L -D -S
+python -m app.cli -l 16 -U -L -D -A    # -A / --exclude-ambiguous: sem 0 O 1 l I
 python -m app.cli --help
 ```
 
@@ -242,6 +390,7 @@ Não há categorias marcadas por padrão na CLI: a seleção deve ser explícita
 | `lowercase` | booleano | `true` | — |
 | `numbers` | booleano | `true` | — |
 | `symbols` | booleano | `true` | — |
+| `exclude_ambiguous` | booleano | `false` | Remove `0 O 1 l I` de todos os conjuntos |
 | `count` | inteiro | 1 | 1 a 10 |
 
 Validação em **modo estrito**: `"16"` (texto), `16.0`/`16.5` (decimais) e `"yes"` (booleano em texto) são rejeitados; campos desconhecidos também.
@@ -306,9 +455,13 @@ Cenários cobertos:
 - Múltiplas senhas; quantidade inválida e não inteira.
 - **Uso de aleatoriedade segura**: `secrets.choice` e `secrets.randbelow` são substituídos por dublês determinísticos, e o teste verifica a saída exata e as chamadas do Fisher–Yates. Não se compara duas senhas aleatórias como "prova" de segurança.
 - Contrato da API (campos, padrões, 422, 405), cabeçalhos `no-store` e de segurança, exemplos mascarados no OpenAPI.
+- Logo do AKCIT presente na página e todas as imagens servidas pela própria aplicação (compatível com a CSP).
+- Exclusão de caracteres ambíguos no núcleo (conjuntos resultantes e 20 senhas de 128 caracteres sem `0 O 1 l I`), na API (incluindo tipo estrito e padrão `false`) e na CLI (`-A`/`--exclude-ambiguous`).
+- Perfis rápidos dentro dos limites do domínio; página com tamanhos de conjunto sem ambíguos (`data-pool-size-unambiguous`) e controles de ocultar, limpar, tema e dica de entropia.
+- Estrutura de usabilidade da página: link de pular conteúdo, mensagens de erro ligadas aos campos (`aria-describedby`), região de status, botões **Restaurar padrões** e **Copiar todas**, favicon.
 - CLI com argumentos válidos, inválidos, `--help` e execução como módulo (`python -m app.cli`).
 
-Resultado da última execução (Windows 11, Python 3.13.5): **81 testes aprovados**, cobertura total de **99%** e **100%** em `app/core`. A única linha não medida é `sys.exit(main())` em `cli.py`, executada em subprocesso pelo teste `test_cli_runs_as_module`. Cobertura alta não é garantia de qualidade; ela só indica que todo o código foi exercitado.
+Resultado da última execução (Windows 11, Python 3.13.5): **130 testes aprovados**, cobertura total de **99%** e **100%** em `app/core`. A única linha não medida é `sys.exit(main())` em `cli.py`, executada em subprocesso pelo teste `test_cli_runs_as_module`. Cobertura alta não é garantia de qualidade; ela só indica que todo o código foi exercitado.
 
 ## 14. Comandos do Makefile
 
@@ -377,13 +530,13 @@ Limitações desse indicador:
 - A interface web depende de JavaScript (há aviso `<noscript>` indicando a CLI).
 - Sem limitação de taxa (rate limiting) no endpoint.
 - Conjunto de símbolos fixo (`!@#$%&*()-_=+`); alterá-lo exige editar `constants.py`.
-- Não há opção para excluir caracteres ambíguos (`0/O`, `1/l/I`).
+- O tema escolhido manualmente não é lembrado entre visitas, por decisão de não gravar nada no navegador.
 - Os testes de interface no navegador foram feitos manualmente/por script descartável, não fazem parte da suíte automatizada.
 - O `Makefile` foi escrito para GNU Make, mas **não foi executado** no ambiente de desenvolvimento (Windows sem Make). Os comandos equivalentes foram executados manualmente.
 
 ## 18. Evolução
 
-- Opção de excluir caracteres ambíguos e de definir símbolos personalizados.
+- Opção de definir símbolos personalizados.
 - Geração de frases-senha (*passphrases*) com lista de palavras (diceware).
 - Rate limiting e cabeçalho `Strict-Transport-Security` para implantação pública.
 - Testes E2E automatizados (ex.: Playwright) no pipeline.
@@ -404,6 +557,10 @@ feat(api): add password generation endpoint
 feat(ui): implement responsive password generator
 fix(cli): escape percent sign in symbols help text
 docs: add project documentation and VS Code configuration
+test(core): add failing ambiguous-character exclusion tests (TDD red)
+feat(core): add option to exclude ambiguous characters
+feat(ui): apply AKCIT identity, one-page layout and usability improvements
+docs: document web usage with screenshots and new options
 ```
 
 Use `git log --oneline` para conferir.
@@ -416,9 +573,13 @@ Use `git log --oneline` para conferir.
 | Aleatoriedade segura (`secrets`) | ✅ | `test_generation_uses_secrets_choice_and_randbelow`, `test_secure_shuffle_implements_fisher_yates_with_randbelow` |
 | Categorias respeitadas | ✅ | `test_respects_selected_and_excluded_categories`, `test_all_categories_are_present_when_all_selected` |
 | Interface web funcional | ✅ | Teste E2E no Edge headless: geração, regeneração, cópia, validações, indicador |
+| Servidor iniciado pelo desenvolvedor | ✅ | `python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000` |
+| Identidade visual AKCIT (cores, logo e imagens) | ✅ | Seção 10; capturas no Edge headless nos temas claro e escuro |
+| Boas práticas de usabilidade | ✅ | Seção 10; teste E2E descartável no Edge headless (desktop e 375 px) |
+| Perfis, ambíguos, ocultar/limpar, cores, tema, dicas de entropia | ✅ | Seção 10; 33 verificações E2E no Edge headless; testes em `tests/` |
 | Endpoint da API | ✅ | `tests/test_api.py`; teste manual com Uvicorn real |
 | CLI independente da web | ✅ | `tests/test_cli.py`; execução real `python -m app.cli` |
-| Testes aprovados | ✅ | 81 aprovados |
+| Testes aprovados | ✅ | 130 aprovados |
 | Black e Ruff sem apontamentos | ✅ | `black --check` e `ruff check` sem erros |
 | Docstrings em funções/classes públicas | ✅ | Regras `D` do Ruff (convenção Google) ativas para `app/` |
 | Sem persistência de senhas | ✅ | Seção 16 |
@@ -457,6 +618,8 @@ Ocorridos de fato durante o desenvolvimento:
 5. **Conversão CRLF pelo Git no Windows**, que pode afetar o Makefile. Solução: `.gitattributes` com `eol=lf`.
 6. **Conflito de atalhos na CLI** (`-l` para comprimento × minúsculas). Solução: categorias com letras maiúsculas (`-U -L -D -S`).
 7. **Commits verdes**: os testes da página foram separados em `tests/test_web.py` para que o commit da API não dependesse da interface ainda inexistente.
+8. **Logo bloqueado pela CSP (evitado)**: carregar a imagem diretamente de `akcit.ufg.br` violaria `img-src 'self'`. Solução: copiar o logo para `app/static/img/` e testar que a página o referencia localmente.
+9. **Foco perdido ao regenerar**: desabilitar o botão "Gerar novas senhas" (`disabled`) durante a requisição fazia o foco do teclado voltar ao início da página. Encontrado no teste E2E. Solução: `aria-disabled` com proteção contra cliques repetidos.
 
 Outros problemas percebidos pelo desenvolvedor: **[A PREENCHER PELO DESENVOLVEDOR]**
 
@@ -473,5 +636,3 @@ Outros problemas percebidos pelo desenvolvedor: **[A PREENCHER PELO DESENVOLVEDO
 ### Importância da validação humana
 
 O desenvolvedor é responsável pelo código entregue. Recomenda-se: ler e compreender cada módulo, executar `make test` e `make lint` localmente, testar a interface manualmente, revisar as decisões listadas acima e registrar nesta seção o que foi alterado após a revisão.
-
-Produtividade e tempo economizado: **[A PREENCHER PELO DESENVOLVEDOR, se desejar; não foram medidos]**
