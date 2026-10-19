@@ -19,6 +19,8 @@ Aplicação em Python que gera senhas aleatórias e **criptograficamente seguras
 
 **Desenvolvido por:** Leandro Rodrigues da Silva Souza
 
+**Versão atual:** [`v1.0.0`](https://github.com/leandrorodriguess/GeradorSenhas/releases/tag/v1.0.0) — veja as mudanças no [CHANGELOG](CHANGELOG.md).
+
 ---
 
 ## Sumário
@@ -41,7 +43,7 @@ Aplicação em Python que gera senhas aleatórias e **criptograficamente seguras
 16. [Segurança das senhas](#16-segurança-das-senhas)
 17. [Limitações](#17-limitações)
 18. [Evolução](#18-evolução)
-19. [Histórico de commits](#19-histórico-de-commits)
+19. [Histórico de commits](#19-histórico-de-commits) — inclui as [versões](#versões)
 20. [Checklist de verificação](#20-checklist-de-verificação)
 21. [Licença](#21-licença)
 22. [Uso de IA Generativa](#22-uso-de-inteligência-artificial-generativa)
@@ -256,6 +258,7 @@ GeradorSenhas/
 │   └── test_cli.py
 ├── .gitattributes
 ├── .gitignore
+├── CHANGELOG.md                   # Histórico de versões
 ├── LICENSE
 ├── Makefile
 ├── pyproject.toml
@@ -713,9 +716,21 @@ docs: document web usage with screenshots and new options
 docs: credit the author in the README
 docs: format README tables and remove unfilled placeholders
 chore: stop tracking VS Code settings
+docs: add application flow diagrams to the README
+docs: add changelog and release information for v1.0.0
 ```
 
 Use `git log --oneline` para conferir.
+
+### Versões
+
+O projeto segue o [Versionamento Semântico](https://semver.org/lang/pt-BR/). Cada versão publicada recebe uma tag anotada (`vMAJOR.MINOR.PATCH`) e uma [release no GitHub](https://github.com/leandrorodriguess/GeradorSenhas/releases), e suas mudanças ficam registradas no [CHANGELOG](CHANGELOG.md).
+
+| Versão                                                                             | Data       | Destaques                                         |
+| ---------------------------------------------------------------------------------- | ---------- | ------------------------------------------------- |
+| [`v1.0.0`](https://github.com/leandrorodriguess/GeradorSenhas/releases/tag/v1.0.0) | 2026-10-19 | Primeira versão estável: web, API REST e CLI      |
+
+Para usar uma versão específica: `git checkout v1.0.0`.
 
 ## 20. Checklist de verificação
 
