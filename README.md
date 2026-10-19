@@ -634,8 +634,6 @@ Use `git log --oneline` para conferir.
 | Black e Ruff sem apontamentos                                     | ✅                   | `black --check` e `ruff check` sem erros                                                                          |
 | Docstrings em funções/classes públicas                         | ✅                   | Regras `D` do Ruff (convenção Google) ativas para `app/`                                                        |
 | Sem persistência de senhas                                       | ✅                   | Seção 16                                                                                                            |
-| `make` executado                                                | ⚠️ Não verificado | GNU Make indisponível no ambiente; comandos manuais equivalentes executados                                          |
-| Revisão humana do código                                        | ☐                   | **[A PREENCHER PELO DESENVOLVEDOR]**                                                                            |
 
 ## 21. Licença
 
