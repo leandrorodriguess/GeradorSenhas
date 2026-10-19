@@ -1,0 +1,32 @@
+# Ambientes virtuais
+.venv/
+venv/
+env/
+
+# Bytecode e caches do Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+
+# Cobertura de testes
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+
+# Empacotamento
+build/
+dist/
+*.egg-info/
+
+# Editores e sistema operacional
+.vscode/*
+!.vscode/settings.json
+!.vscode/launch.json
+.idea/
+.DS_Store
+Thumbs.db
+
+# Variáveis de ambiente locais
+.env
