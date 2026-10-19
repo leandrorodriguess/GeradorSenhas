@@ -1,0 +1,3 @@
+# Normaliza finais de linha; o Makefile exige LF e tabulações reais.
+* text=auto eol=lf
+*.bat text eol=crlf
