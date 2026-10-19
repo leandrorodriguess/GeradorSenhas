@@ -11,11 +11,13 @@ Aplicação em Python que gera senhas aleatórias e **criptograficamente seguras
 - **CLI** (`python -m app.cli`).
 
 <p align="center">
-  <img src="docs/img/demo-web.gif" alt="Demonstração animada: ajuste do comprimento com a entropia sendo atualizada, desmarcação de caracteres especiais, geração de 3 senhas, cópia de uma senha e de todas, e geração de um novo lote" width="720">
+  <img src="docs/img/demo-web.gif" alt="Demonstração animada: perfis rápidos, ajuste do comprimento com a entropia sendo atualizada, geração de 3 senhas coloridas por tipo, cópia, ocultar senhas, novo lote e limpar senhas" width="720">
   <br><em>Interface web em execução (veja a <a href="#demonstração-visual">demonstração passo a passo</a>).</em>
 </p>
 
 > Projeto acadêmico de laboratório (Pós-graduação — UFG / [AKCIT](https://akcit.ufg.br/)), focado em fundamentos de Engenharia de Software: Clean Code, TDD, separação de responsabilidades e segurança de aplicações.
+
+**Desenvolvido por:** Leandro Rodrigues da Silva Souza
 
 ---
 
@@ -561,6 +563,7 @@ test(core): add failing ambiguous-character exclusion tests (TDD red)
 feat(core): add option to exclude ambiguous characters
 feat(ui): apply AKCIT identity, one-page layout and usability improvements
 docs: document web usage with screenshots and new options
+docs: credit the author in the README
 ```
 
 Use `git log --oneline` para conferir.
@@ -589,6 +592,8 @@ Use `git log --oneline` para conferir.
 ## 21. Licença
 
 Distribuído sob a licença MIT. Consulte [LICENSE](LICENSE).
+
+© 2026 Leandro Rodrigues da Silva Souza.
 
 ## 22. Uso de Inteligência Artificial Generativa
 
