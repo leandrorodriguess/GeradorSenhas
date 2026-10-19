@@ -76,7 +76,9 @@ def build_parser() -> argparse.ArgumentParser:
         "-S",
         "--symbols",
         action="store_true",
-        help=f"incluir símbolos ({SYMBOL_CHARACTERS})",
+        # O argparse aplica formatação "%" aos textos de ajuda; o "%" presente
+        # nos símbolos precisa ser escapado para não quebrar o --help.
+        help=f"incluir símbolos ({SYMBOL_CHARACTERS.replace('%', '%%')})",
     )
     return parser
 

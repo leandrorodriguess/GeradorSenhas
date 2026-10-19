@@ -11,6 +11,7 @@ from app.core.constants import (
     MAX_PASSWORD_LENGTH,
     MIN_PASSWORD_LENGTH,
     NUMBER_CHARACTERS,
+    SYMBOL_CHARACTERS,
 )
 
 ALL_CATEGORIES = ["--uppercase", "--lowercase", "--numbers", "--symbols"]
@@ -73,6 +74,16 @@ def test_cli_rejects_malformed_arguments(capsys, arguments):
 
     assert exit_info.value.code == cli.EXIT_USAGE_ERROR
     assert "error" in capsys.readouterr().err.lower()
+
+
+def test_cli_help_lists_symbols(capsys):
+    # Regressão: o "%" dos símbolos era interpretado como formatação pelo
+    # argparse e fazia o --help lançar ValueError.
+    with pytest.raises(SystemExit) as exit_info:
+        cli.main(["--help"])
+
+    assert exit_info.value.code == cli.EXIT_SUCCESS
+    assert SYMBOL_CHARACTERS in capsys.readouterr().out
 
 
 def test_cli_runs_as_module():
