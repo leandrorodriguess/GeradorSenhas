@@ -4,6 +4,7 @@ import pytest
 
 from app.core import password_generator
 from app.core.constants import (
+    AMBIGUOUS_CHARACTERS,
     CHARACTER_SETS,
     LOWERCASE_CHARACTERS,
     MAX_PASSWORD_COUNT,
@@ -233,3 +234,50 @@ def test_generation_uses_secrets_choice_and_randbelow(monkeypatch):
 
 def test_module_does_not_use_insecure_random():
     assert not hasattr(password_generator, "random")
+
+
+# --- Caracteres ambíguos -----------------------------------------------------
+
+
+def test_ambiguous_characters_are_the_visually_confusable_ones():
+    assert set(AMBIGUOUS_CHARACTERS) == set("0O1lI")
+
+
+def test_select_character_sets_keeps_ambiguous_characters_by_default():
+    sets = select_character_sets(
+        uppercase=True, lowercase=True, numbers=True, symbols=True
+    )
+
+    assert sets == list(CHARACTER_SETS.values())
+
+
+def test_select_character_sets_can_exclude_ambiguous_characters():
+    sets = select_character_sets(
+        uppercase=True,
+        lowercase=True,
+        numbers=True,
+        symbols=True,
+        exclude_ambiguous=True,
+    )
+
+    assert len(sets) == len(CharacterCategory)
+    assert not any(contains_any(chars, AMBIGUOUS_CHARACTERS) for chars in sets)
+    assert sets[0] == UPPERCASE_CHARACTERS.replace("O", "").replace("I", "")
+    assert sets[1] == LOWERCASE_CHARACTERS.replace("l", "")
+    assert sets[2] == "23456789"
+    assert sets[3] == SYMBOL_CHARACTERS
+
+
+@pytest.mark.parametrize("_", range(20))
+def test_passwords_without_ambiguous_characters_never_contain_them(_):
+    sets = select_character_sets(
+        uppercase=True,
+        lowercase=True,
+        numbers=True,
+        symbols=False,
+        exclude_ambiguous=True,
+    )
+
+    password = generate_password(MAX_PASSWORD_LENGTH, sets)
+
+    assert not contains_any(password, AMBIGUOUS_CHARACTERS)

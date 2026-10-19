@@ -7,6 +7,7 @@ import pytest
 
 from app import cli
 from app.core.constants import (
+    AMBIGUOUS_CHARACTERS,
     DEFAULT_PASSWORD_LENGTH,
     MAX_PASSWORD_LENGTH,
     MIN_PASSWORD_LENGTH,
@@ -96,3 +97,15 @@ def test_cli_runs_as_module():
 
     assert completed.returncode == cli.EXIT_SUCCESS
     assert len(completed.stdout.strip()) == 12
+
+
+@pytest.mark.parametrize("flag", ["--exclude-ambiguous", "-A"])
+def test_cli_can_exclude_ambiguous_characters(capsys, flag):
+    exit_code = cli.main(
+        ["-l", str(MAX_PASSWORD_LENGTH), "-c", "10", *ALL_CATEGORIES, flag]
+    )
+
+    output_lines = capsys.readouterr().out.splitlines()
+    assert exit_code == cli.EXIT_SUCCESS
+    assert len(output_lines) == 10
+    assert all(not set(line) & set(AMBIGUOUS_CHARACTERS) for line in output_lines)

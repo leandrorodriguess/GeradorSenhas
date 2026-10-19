@@ -4,6 +4,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from app.core.constants import (
+    AMBIGUOUS_CHARACTERS,
     DEFAULT_PASSWORD_COUNT,
     DEFAULT_PASSWORD_LENGTH,
     LOWERCASE_CHARACTERS,
@@ -171,3 +172,32 @@ def test_openapi_documents_endpoint_without_real_passwords(client):
     response_schema = schema["components"]["schemas"]["PasswordGenerationResponse"]
     example_passwords = response_schema["examples"][0]["passwords"]
     assert all(set(password) == {"*"} for password in example_passwords)
+
+
+# --- Caracteres ambíguos -----------------------------------------------------
+
+
+def test_generate_can_exclude_ambiguous_characters(client):
+    payload = payload_with(
+        length=MAX_PASSWORD_LENGTH, count=MAX_PASSWORD_COUNT, exclude_ambiguous=True
+    )
+
+    response = client.post(GENERATE_URL, json=payload)
+
+    assert response.status_code == 200
+    for password in response.json()["passwords"]:
+        assert not set(password) & set(AMBIGUOUS_CHARACTERS)
+
+
+def test_exclude_ambiguous_defaults_to_false(client):
+    properties = client.get("/openapi.json").json()["components"]["schemas"][
+        "PasswordGenerationRequest"
+    ]["properties"]
+
+    assert properties["exclude_ambiguous"]["default"] is False
+
+
+def test_exclude_ambiguous_must_be_boolean(client):
+    response = client.post(GENERATE_URL, json=payload_with(exclude_ambiguous="yes"))
+
+    assert response.status_code == 422
