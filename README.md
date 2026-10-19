@@ -27,7 +27,7 @@ Aplicação em Python que gera senhas aleatórias e **criptograficamente seguras
 2. [Objetivos](#2-objetivos)
 3. [Funcionalidades](#3-funcionalidades)
 4. [Tecnologias](#4-tecnologias)
-5. [Decisões arquiteturais](#5-decisões-arquiteturais)
+5. [Decisões arquiteturais](#5-decisões-arquiteturais) — inclui os [diagramas de funcionamento](#diagramas-de-funcionamento)
 6. [Estrutura de diretórios](#6-estrutura-de-diretórios)
 7. [Pré-requisitos](#7-pré-requisitos)
 8. [Instalação](#8-instalação)
@@ -120,6 +120,107 @@ Nenhum banco de dados, autenticação ou serviço externo é utilizado.
   - `tests/test_web.py` foi adicionado para separar os testes da página/arquivos estáticos dos testes do contrato da API.
   - `.gitattributes` força finais de linha LF (o Makefile exige tabulações e LF; o Git no Windows convertia para CRLF).
   - `.vscode/` não é versionado (está no `.gitignore`): são preferências locais do editor. A seção 15 traz um modelo para quem quiser recriá-las.
+
+### Diagramas de funcionamento
+
+Os diagramas abaixo usam [Mermaid](https://mermaid.js.org/), desenhado automaticamente pelo GitHub. No VS Code, instale a extensão *Markdown Preview Mermaid Support* para vê-los na pré-visualização.
+
+#### Visão geral
+
+Web, API e CLI são apenas portas de entrada: todas chegam ao mesmo núcleo, que é o único lugar onde senhas são geradas. Os limites e os tamanhos dos conjuntos de `constants.py` também são enviados ao HTML, para que a página nunca divirja das regras do backend.
+
+```mermaid
+flowchart TB
+    pessoa(["Pessoa usuária"])
+
+    subgraph web["Interface web - navegador"]
+        pagina["index.html + script.js<br/>formulário, entropia e exibição"]
+    end
+
+    subgraph servidor["Servidor FastAPI - app/main.py"]
+        middleware["Middleware de segurança<br/>no-store, CSP, nosniff"]
+        rota["POST /api/v1/passwords/generate<br/>app/api/routes.py"]
+        schema["Validação Pydantic<br/>app/schemas/password.py"]
+    end
+
+    cli["CLI - terminal<br/>app/cli.py"]
+
+    subgraph nucleo["Núcleo - app/core"]
+        regras["password_generator.py<br/>regras de negócio"]
+        constantes["constants.py<br/>limites e conjuntos"]
+    end
+
+    secrets[("Módulo secrets<br/>CSPRNG do sistema operacional")]
+
+    pessoa -->|"navegador"| pagina
+    pessoa -->|"terminal"| cli
+    pagina -->|"fetch POST JSON"| middleware
+    middleware --> rota --> schema
+    schema -->|"dados válidos"| regras
+    cli -->|"argumentos"| regras
+    regras --> constantes
+    regras -->|"choice e randbelow"| secrets
+```
+
+#### Geração de senhas pela web
+
+O JavaScript só valida e exibe; quem gera é o backend. Erros de tipo ou faixa são barrados pelo Pydantic, e regras de negócio pelo núcleo — ambos voltam como HTTP 422.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor P as Pessoa
+    participant JS as Navegador<br/>script.js
+    participant API as FastAPI<br/>routes.py
+    participant PY as Pydantic<br/>schemas
+    participant C as Núcleo<br/>password_generator.py
+    participant S as secrets
+
+    P->>JS: Ajusta opções ou escolhe um perfil
+    JS-->>P: Atualiza a entropia estimada e a dica
+    P->>JS: Clica em Gerar senhas
+    JS->>JS: Valida comprimento, quantidade e categorias
+    alt Formulário inválido
+        JS-->>P: Erro junto ao campo e foco no primeiro inválido
+    else Formulário válido
+        JS->>API: POST /api/v1/passwords/generate em JSON
+        API->>PY: Valida tipos e faixas em modo estrito
+        alt Tipo, faixa ou campo inválido
+            PY-->>JS: 422 com a lista de erros
+        else Dados válidos
+            API->>C: select_character_sets e generate_passwords
+            C->>S: secrets.choice e secrets.randbelow
+            S-->>C: Valores aleatórios seguros
+            alt Nenhuma categoria selecionada
+                C-->>API: PasswordGenerationError
+                API-->>JS: 422 com a mensagem da regra
+            else Sucesso
+                C-->>API: Lista de senhas
+                API-->>JS: 200 com passwords, length e count
+            end
+        end
+        JS-->>P: Senhas coloridas por tipo, com Copiar, Ocultar e Limpar
+    end
+    Note over JS,API: Respostas com Cache-Control no-store. Nada é gravado em log, disco ou navegador.
+```
+
+#### Algoritmo de geração de uma senha
+
+```mermaid
+flowchart TD
+    inicio(["generate_password<br/>comprimento + conjuntos"]) --> tipo{"Comprimento é<br/>número inteiro?"}
+    tipo -- "não" --> erroTipo[["TypeError"]]
+    tipo -- "sim" --> faixa{"Entre 8 e 128?"}
+    faixa -- "não" --> erroValor[["PasswordGenerationError"]]
+    faixa -- "sim" --> conjuntos{"Há conjuntos, nenhum vazio<br/>e comprimento maior ou igual<br/>à quantidade de categorias?"}
+    conjuntos -- "não" --> erroValor
+    conjuntos -- "sim" --> obrigatorios["1. Sorteia um caractere de cada<br/>categoria com secrets.choice"]
+    obrigatorios --> restante["2. Completa o comprimento sorteando do<br/>conjunto combinado, sem repetições"]
+    restante --> embaralha["3. Embaralha tudo com Fisher-Yates<br/>usando secrets.randbelow"]
+    embaralha --> fim(["Senha pronta"])
+```
+
+Com **Evitar caracteres ambíguos**, `select_character_sets` remove `0 O 1 l I` dos conjuntos antes desses passos. Embaralhar no fim impede que os caracteres obrigatórios fiquem sempre nas primeiras posições.
 
 ## 6. Estrutura de diretórios
 
