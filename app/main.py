@@ -13,6 +13,7 @@ from fastapi.templating import Jinja2Templates
 
 from app.api.routes import router as passwords_router
 from app.core.constants import (
+    AMBIGUOUS_CHARACTERS,
     CHARACTER_SETS,
     DEFAULT_PASSWORD_COUNT,
     DEFAULT_PASSWORD_LENGTH,
@@ -22,6 +23,7 @@ from app.core.constants import (
     MIN_PASSWORD_LENGTH,
     CharacterCategory,
 )
+from app.core.password_generator import remove_ambiguous_characters
 
 APP_DIRECTORY = Path(__file__).resolve().parent
 DOCS_URL = "/docs"
@@ -52,6 +54,43 @@ CATEGORY_LABELS = {
     CharacterCategory.NUMBERS: "Números",
     CharacterCategory.SYMBOLS: "Caracteres especiais",
 }
+
+# Perfis rápidos da interface: atalhos para combinações comuns de opções.
+# Os comprimentos respeitam os limites do domínio (validados nos testes).
+PRESETS = (
+    {
+        "label": "Padrão",
+        "description": "16 caracteres, todas as categorias",
+        "length": DEFAULT_PASSWORD_LENGTH,
+        "categories": tuple(CharacterCategory),
+        "exclude_ambiguous": False,
+    },
+    {
+        "label": "Máxima segurança",
+        "description": "32 caracteres, todas as categorias",
+        "length": 32,
+        "categories": tuple(CharacterCategory),
+        "exclude_ambiguous": False,
+    },
+    {
+        "label": "Sem símbolos",
+        "description": "20 caracteres, para sites que não aceitam símbolos",
+        "length": 20,
+        "categories": (
+            CharacterCategory.UPPERCASE,
+            CharacterCategory.LOWERCASE,
+            CharacterCategory.NUMBERS,
+        ),
+        "exclude_ambiguous": False,
+    },
+    {
+        "label": "Fácil de digitar",
+        "description": "16 caracteres, sem 0/O e 1/l/I",
+        "length": DEFAULT_PASSWORD_LENGTH,
+        "categories": tuple(CharacterCategory),
+        "exclude_ambiguous": True,
+    },
+)
 
 templates = Jinja2Templates(directory=APP_DIRECTORY / "templates")
 
@@ -97,11 +136,16 @@ def render_index(request: Request) -> HTMLResponse:
             "name": category.value,
             "label": CATEGORY_LABELS[category],
             "characters": CHARACTER_SETS[category],
+            "unambiguous_size": len(
+                remove_ambiguous_characters(CHARACTER_SETS[category])
+            ),
         }
         for category in CharacterCategory
     ]
     context = {
         "categories": categories,
+        "ambiguous_characters": AMBIGUOUS_CHARACTERS,
+        "presets": PRESETS,
         "min_length": MIN_PASSWORD_LENGTH,
         "max_length": MAX_PASSWORD_LENGTH,
         "default_length": DEFAULT_PASSWORD_LENGTH,

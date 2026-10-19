@@ -5,17 +5,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="referrer" content="no-referrer">
   <meta name="description" content="Gerador de senhas aleatórias e criptograficamente seguras.">
+  <meta name="author" content="Leandro Rodrigues da Silva Souza">
+  <meta name="theme-color" content="#19032b">
   <title>SecurePass — Gerador de Senhas Seguras</title>
+  <link rel="icon" href="{{ url_for('static', path='img/favicon.ico') }}" sizes="48x48">
   <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
   <script src="{{ url_for('static', path='js/script.js') }}" defer></script>
 </head>
 <body>
-  <header class="site-header">
-    <h1>SecurePass</h1>
-    <p>Gerador de senhas aleatórias e criptograficamente seguras.</p>
+  <a class="skip-link" href="#main">Pular para o gerador</a>
+
+  <header class="topbar">
+    <a class="topbar__brand" href="https://akcit.ufg.br/" rel="noopener noreferrer">
+      <img src="{{ url_for('static', path='img/logo-akcit-branca.png') }}"
+           alt="AKCIT — Centro de Competência EMBRAPII em Tecnologias Imersivas"
+           width="120" height="39">
+    </a>
+    <span class="topbar__divider" aria-hidden="true"></span>
+    <div class="topbar__title">
+      <h1>SecurePass</h1>
+      <p>Gerador de senhas aleatórias e criptograficamente seguras</p>
+    </div>
+    <button type="button" class="theme-button" id="theme-button"
+            aria-label="Tema da página: automático (segue o sistema). Clique para alternar.">
+      <span aria-hidden="true">◐</span> <span id="theme-label">Automático</span>
+    </button>
   </header>
 
-  <main class="container">
+  <main class="layout" id="main" tabindex="-1">
     <noscript>
       <p class="message message--error">
         Esta página precisa de JavaScript. Como alternativa, use a CLI:
@@ -23,78 +40,145 @@
       </p>
     </noscript>
 
-    <section class="card" aria-labelledby="options-title">
+    <section class="card options" aria-labelledby="options-title">
       <h2 id="options-title">Opções</h2>
 
+      <div class="presets" role="group" aria-labelledby="presets-title">
+        <p id="presets-title" class="field__label">Perfis rápidos</p>
+        <div class="presets__list">
+          {% for preset in presets %}
+          <button type="button" class="preset" aria-pressed="false"
+                  title="{{ preset.description }}"
+                  data-preset-length="{{ preset.length }}"
+                  data-preset-categories="{{ preset.categories | join(' ') }}"
+                  data-preset-exclude-ambiguous="{{ 'true' if preset.exclude_ambiguous else 'false' }}">
+            <span class="preset__label">{{ preset.label }}</span>
+            <span class="visually-hidden">: {{ preset.description }}</span>
+          </button>
+          {% endfor %}
+        </div>
+      </div>
+
       <form id="generator-form" method="post" novalidate autocomplete="off">
-        <div class="field">
-          <label for="length">Comprimento da senha</label>
-          <div class="range-row">
-            <input type="range" id="length-range" min="{{ min_length }}" max="{{ max_length }}"
-                   value="{{ default_length }}" aria-label="Comprimento (controle deslizante)"
-                   aria-controls="length">
-            <input type="number" id="length" name="length" min="{{ min_length }}"
-                   max="{{ max_length }}" value="{{ default_length }}" step="1" required
-                   inputmode="numeric" aria-describedby="length-hint">
+        <div class="field-row">
+          <div class="field field--grow">
+            <label for="length" class="field__label">Comprimento</label>
+            <div class="range-row">
+              <input type="range" id="length-range" min="{{ min_length }}" max="{{ max_length }}"
+                     value="{{ default_length }}" aria-label="Comprimento (controle deslizante)"
+                     aria-controls="length">
+              <input type="number" id="length" name="length" min="{{ min_length }}"
+                     max="{{ max_length }}" value="{{ default_length }}" step="1" required
+                     inputmode="numeric" aria-describedby="length-hint length-error">
+            </div>
+            <small id="length-hint">{{ min_length }} a {{ max_length }} caracteres</small>
+            <p id="length-error" class="field-error" hidden></p>
           </div>
-          <small id="length-hint">Entre {{ min_length }} e {{ max_length }} caracteres.</small>
+
+          <div class="field">
+            <label for="count" class="field__label">Quantidade</label>
+            <input type="number" id="count" name="count" min="{{ min_count }}"
+                   max="{{ max_count }}" value="{{ default_count }}" step="1" required
+                   inputmode="numeric" aria-describedby="count-hint count-error">
+            <small id="count-hint">{{ min_count }} a {{ max_count }} senhas</small>
+            <p id="count-error" class="field-error" hidden></p>
+          </div>
         </div>
 
-        <fieldset class="field">
-          <legend>Caracteres incluídos</legend>
-          {% for category in categories %}
-          <label class="checkbox">
-            <input type="checkbox" name="{{ category.name }}" checked
-                   data-pool-size="{{ category.characters | length }}">
-            <span>{{ category.label }} <code>{{ category.characters }}</code></span>
+        <fieldset class="field" aria-describedby="categories-error">
+          <legend class="field__label">Caracteres incluídos</legend>
+          <div class="categories">
+            {% for category in categories %}
+            <label class="checkbox" title="{{ category.characters }}">
+              <input type="checkbox" name="{{ category.name }}" checked
+                     data-pool-size="{{ category.characters | length }}"
+                     data-pool-size-unambiguous="{{ category.unambiguous_size }}">
+              <span>{{ category.label }} <code>{{ category.characters }}</code></span>
+            </label>
+            {% endfor %}
+          </div>
+          <label class="checkbox checkbox--option">
+            <input type="checkbox" name="exclude_ambiguous" id="exclude-ambiguous">
+            <span>
+              Evitar caracteres ambíguos
+              <code>{{ ambiguous_characters | list | join(' ') }}</code>
+              <small class="checkbox__hint">mais fácil de ler e digitar</small>
+            </span>
           </label>
-          {% endfor %}
+          <p id="categories-error" class="field-error" hidden></p>
         </fieldset>
 
-        <div class="field">
-          <label for="count">Quantidade de senhas</label>
-          <input type="number" id="count" name="count" min="{{ min_count }}"
-                 max="{{ max_count }}" value="{{ default_count }}" step="1" required
-                 inputmode="numeric" aria-describedby="count-hint">
-          <small id="count-hint">Entre {{ min_count }} e {{ max_count }} senhas.</small>
-        </div>
-
-        <div class="strength" aria-live="polite">
+        <div class="strength" id="strength" data-level="none">
           <div class="strength__label">
-            <span>Entropia estimada</span>
-            <strong id="entropy-value">—</strong>
+            <span id="entropy-title">Entropia estimada</span>
+            <strong id="entropy-value" class="strength__badge" aria-live="polite">—</strong>
           </div>
           <meter id="entropy-meter" min="0" max="128" low="60" high="80" optimum="128"
-                 value="0" aria-labelledby="entropy-value"></meter>
-          <small>
-            Estimativa matemática (comprimento × log₂ do total de caracteres possíveis).
-            Não é garantia contra ataques.
-          </small>
+                 value="0" aria-labelledby="entropy-title entropy-value"></meter>
+          <p id="entropy-tip" class="strength__tip" aria-live="polite"></p>
         </div>
 
         <p id="form-message" class="message" role="alert" hidden></p>
 
-        <button type="submit" class="button button--primary" id="generate-button">
-          Gerar senhas
-        </button>
+        <div class="actions">
+          <button type="submit" class="button button--primary" id="generate-button">
+            Gerar senhas
+          </button>
+          <button type="button" class="button" id="reset-button">Restaurar padrões</button>
+        </div>
       </form>
     </section>
 
-    <section class="card" id="results" aria-labelledby="results-title" hidden>
+    <section class="card results" id="results" aria-labelledby="results-title">
       <div class="results__header">
-        <h2 id="results-title">Senhas geradas</h2>
-        <button type="button" class="button" id="regenerate-button">Gerar novas senhas</button>
+        <h2 id="results-title" tabindex="-1">Senhas geradas</h2>
+        <button type="button" class="button button--small" id="visibility-button"
+                aria-pressed="false" aria-controls="password-list" hidden>
+          Ocultar senhas
+        </button>
       </div>
+
+      <div class="results__empty" id="results-empty">
+        <p class="results__empty-icon" aria-hidden="true">🔐</p>
+        <p>
+          Escolha as opções e clique em <strong>Gerar senhas</strong>.
+          As senhas aparecerão aqui.
+        </p>
+      </div>
+
       <ul id="password-list" class="password-list"></ul>
+
+      <div class="results__footer" id="results-footer" hidden>
+        <p class="legend" aria-hidden="true">
+          <span class="char-upper">ABC</span> maiúsculas ·
+          <span class="char-lower">abc</span> minúsculas ·
+          <span class="char-number">123</span> números ·
+          <span class="char-symbol">#$%</span> símbolos
+        </p>
+        <div class="results__actions">
+          <button type="button" class="button" id="copy-all-button">Copiar todas</button>
+          <button type="button" class="button" id="regenerate-button">Gerar novas</button>
+          <button type="button" class="button button--quiet" id="clear-button">Limpar senhas</button>
+        </div>
+      </div>
+
       <p class="notice">
-        As senhas são exibidas apenas nesta página e não são armazenadas. Ao copiar,
-        lembre-se de que a área de transferência pode ser lida por outros programas.
+        Clique em uma senha para selecioná-la. Nada é armazenado; a área de transferência
+        pode ser lida por outros programas. A entropia é uma estimativa matemática
+        (comprimento × log₂ dos caracteres possíveis), não uma garantia contra ataques.
       </p>
     </section>
+
+    <p id="status" class="visually-hidden" role="status" aria-live="polite"></p>
   </main>
 
   <footer class="site-footer">
-    <p>Projeto acadêmico · <a href="/docs">Documentação da API</a></p>
+    <p>
+      Desenvolvido por: <strong>Leandro Rodrigues da Silva Souza</strong>
+      <span aria-hidden="true">·</span> Projeto acadêmico · Pós-graduação UFG ·
+      <a href="https://akcit.ufg.br/" rel="noopener noreferrer">AKCIT</a> ·
+      <a href="/docs">Documentação da API</a>
+    </p>
   </footer>
 </body>
 </html>
