@@ -47,6 +47,11 @@ convention = "google"
 testpaths = ["tests"]
 pythonpath = ["."]
 addopts = "-ra"
+# O Starlette 1.9 sugere migrar para httpx2; o projeto mantém o HTTPX por ser a
+# ferramenta exigida nos requisitos. Apenas este aviso específico é silenciado.
+filterwarnings = [
+    "ignore:Using `httpx` with `starlette.testclient` is deprecated",
+]
 
 [tool.coverage.run]
 source = ["app"]
