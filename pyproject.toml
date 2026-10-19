@@ -39,7 +39,9 @@ convention = "google"
 
 [tool.ruff.lint.per-file-ignores]
 # Nos testes, assert é o mecanismo esperado e docstrings por teste seriam ruído.
-"tests/**" = ["S101", "D"]
+# S105/S106 acusam "senhas fixas", mas nos testes são saídas esperadas de mocks.
+# S603 acusa subprocess; o teste da CLI executa o próprio interpretador.
+"tests/**" = ["S101", "S105", "S106", "S603", "D"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

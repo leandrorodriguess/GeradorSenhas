@@ -56,7 +56,9 @@ def test_rejects_length_out_of_range(length, all_character_sets):
 
 
 @pytest.mark.parametrize(
-    "length", [16.0, 16.5, "16", None, True], ids=["float", "decimal", "str", "none", "bool"]
+    "length",
+    [16.0, 16.5, "16", None, True],
+    ids=["float", "decimal", "str", "none", "bool"],
 )
 def test_rejects_non_integer_length(length, all_character_sets):
     with pytest.raises(TypeError, match="inteiro"):
@@ -107,8 +109,14 @@ def test_all_categories_are_present_when_all_selected(all_character_sets):
             [UPPERCASE_CHARACTERS, NUMBER_CHARACTERS, SYMBOL_CHARACTERS],
             [LOWERCASE_CHARACTERS],
         ),
-        ([LOWERCASE_CHARACTERS, NUMBER_CHARACTERS], [UPPERCASE_CHARACTERS, SYMBOL_CHARACTERS]),
-        ([UPPERCASE_CHARACTERS, SYMBOL_CHARACTERS], [LOWERCASE_CHARACTERS, NUMBER_CHARACTERS]),
+        (
+            [LOWERCASE_CHARACTERS, NUMBER_CHARACTERS],
+            [UPPERCASE_CHARACTERS, SYMBOL_CHARACTERS],
+        ),
+        (
+            [UPPERCASE_CHARACTERS, SYMBOL_CHARACTERS],
+            [LOWERCASE_CHARACTERS, NUMBER_CHARACTERS],
+        ),
     ],
     ids=["sem-minusculas", "sem-maiusculas-e-simbolos", "sem-minusculas-e-numeros"],
 )
