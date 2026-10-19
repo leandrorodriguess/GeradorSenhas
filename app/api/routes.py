@@ -56,6 +56,7 @@ def generate(request: PasswordGenerationRequest) -> PasswordGenerationResponse:
         lowercase=request.lowercase,
         numbers=request.numbers,
         symbols=request.symbols,
+        exclude_ambiguous=request.exclude_ambiguous,
     )
     try:
         passwords = generate_passwords(request.length, character_sets, request.count)

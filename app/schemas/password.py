@@ -34,6 +34,7 @@ class PasswordGenerationRequest(BaseModel):
         lowercase: Incluir letras minúsculas (a-z).
         numbers: Incluir dígitos (0-9).
         symbols: Incluir caracteres especiais.
+        exclude_ambiguous: Remover caracteres confundíveis (0, O, 1, l, I).
         count: Quantidade de senhas a gerar.
     """
 
@@ -48,6 +49,7 @@ class PasswordGenerationRequest(BaseModel):
                     "lowercase": True,
                     "numbers": True,
                     "symbols": True,
+                    "exclude_ambiguous": False,
                     "count": DEFAULT_PASSWORD_COUNT,
                 }
             ]
@@ -64,6 +66,10 @@ class PasswordGenerationRequest(BaseModel):
     lowercase: bool = Field(default=True, description="Incluir letras a-z.")
     numbers: bool = Field(default=True, description="Incluir dígitos 0-9.")
     symbols: bool = Field(default=True, description="Incluir caracteres especiais.")
+    exclude_ambiguous: bool = Field(
+        default=False,
+        description="Remover caracteres confundíveis (0, O, 1, l, I).",
+    )
     count: int = Field(
         default=DEFAULT_PASSWORD_COUNT,
         ge=MIN_PASSWORD_COUNT,

@@ -16,6 +16,7 @@ import sys
 from collections.abc import Sequence
 
 from app.core.constants import (
+    AMBIGUOUS_CHARACTERS,
     DEFAULT_PASSWORD_COUNT,
     DEFAULT_PASSWORD_LENGTH,
     MAX_PASSWORD_COUNT,
@@ -80,6 +81,12 @@ def build_parser() -> argparse.ArgumentParser:
         # nos símbolos precisa ser escapado para não quebrar o --help.
         help=f"incluir símbolos ({SYMBOL_CHARACTERS.replace('%', '%%')})",
     )
+    parser.add_argument(
+        "-A",
+        "--exclude-ambiguous",
+        action="store_true",
+        help=f"remover caracteres confundíveis ({AMBIGUOUS_CHARACTERS})",
+    )
     return parser
 
 
@@ -104,6 +111,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         lowercase=arguments.lowercase,
         numbers=arguments.numbers,
         symbols=arguments.symbols,
+        exclude_ambiguous=arguments.exclude_ambiguous,
     )
     try:
         passwords = generate_passwords(

@@ -33,6 +33,10 @@ LOWERCASE_CHARACTERS: Final = string.ascii_lowercase
 NUMBER_CHARACTERS: Final = string.digits
 SYMBOL_CHARACTERS: Final = "!@#$%&*()-_=+"
 
+# Caracteres facilmente confundidos ao ler ou digitar a senha (0/O, 1/l/I).
+# Removê-los reduz um pouco a entropia, mas evita erros de transcrição.
+AMBIGUOUS_CHARACTERS: Final = "0O1lI"
+
 # MappingProxyType torna o mapeamento somente leitura, evitando estado global
 # mutável que poderia alterar silenciosamente os conjuntos de caracteres.
 CHARACTER_SETS: Final = MappingProxyType(

@@ -13,6 +13,7 @@ import secrets
 from collections.abc import Sequence
 
 from app.core.constants import (
+    AMBIGUOUS_CHARACTERS,
     CHARACTER_SETS,
     MAX_PASSWORD_COUNT,
     MAX_PASSWORD_LENGTH,
@@ -32,7 +33,12 @@ class PasswordGenerationError(ValueError):
 
 
 def select_character_sets(
-    *, uppercase: bool, lowercase: bool, numbers: bool, symbols: bool
+    *,
+    uppercase: bool,
+    lowercase: bool,
+    numbers: bool,
+    symbols: bool,
+    exclude_ambiguous: bool = False,
 ) -> list[str]:
     """Converte as opções escolhidas pelo usuário em conjuntos de caracteres.
 
@@ -41,6 +47,8 @@ def select_character_sets(
         lowercase: Incluir letras minúsculas (a-z).
         numbers: Incluir dígitos (0-9).
         symbols: Incluir caracteres especiais.
+        exclude_ambiguous: Remover caracteres confundíveis
+            (``AMBIGUOUS_CHARACTERS``) de todos os conjuntos.
 
     Returns:
         Conjuntos de caracteres das categorias marcadas, na ordem de
@@ -52,9 +60,24 @@ def select_character_sets(
         CharacterCategory.NUMBERS: numbers,
         CharacterCategory.SYMBOLS: symbols,
     }
-    return [
+    selected = [
         CHARACTER_SETS[category] for category in CharacterCategory if flags[category]
     ]
+    if exclude_ambiguous:
+        selected = [remove_ambiguous_characters(chars) for chars in selected]
+    return selected
+
+
+def remove_ambiguous_characters(characters: str) -> str:
+    """Remove de um conjunto os caracteres visualmente confundíveis.
+
+    Args:
+        characters: Conjunto de caracteres original.
+
+    Returns:
+        O mesmo conjunto, na mesma ordem, sem ``AMBIGUOUS_CHARACTERS``.
+    """
+    return "".join(char for char in characters if char not in AMBIGUOUS_CHARACTERS)
 
 
 def secure_shuffle(items: list[str]) -> None:
