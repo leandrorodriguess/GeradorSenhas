@@ -21,9 +21,8 @@ dist/
 *.egg-info/
 
 # Editores e sistema operacional
-.vscode/*
-!.vscode/settings.json
-!.vscode/launch.json
+# Configurações locais do VS Code (não versionadas; modelo no README, seção 15)
+.vscode/
 .idea/
 .DS_Store
 Thumbs.db

@@ -119,7 +119,7 @@ Nenhum banco de dados, autenticação ou serviço externo é utilizado.
   - Os arquivos ficam na raiz do repositório (`GeradorSenhas/`) em vez de uma subpasta `securepass/`, pois o repositório já é o projeto.
   - `tests/test_web.py` foi adicionado para separar os testes da página/arquivos estáticos dos testes do contrato da API.
   - `.gitattributes` força finais de linha LF (o Makefile exige tabulações e LF; o Git no Windows convertia para CRLF).
-  - `.vscode/` contém configurações para executar e depurar no VS Code.
+  - `.vscode/` não é versionado (está no `.gitignore`): são preferências locais do editor. A seção 15 traz um modelo para quem quiser recriá-las.
 
 ## 6. Estrutura de diretórios
 
@@ -153,7 +153,6 @@ GeradorSenhas/
 │   ├── test_api.py
 │   ├── test_web.py
 │   └── test_cli.py
-├── .vscode/ (settings.json, launch.json)
 ├── .gitattributes
 ├── .gitignore
 ├── LICENSE
@@ -230,7 +229,7 @@ Com o ambiente ativado, o terminal mostra `(.venv)` no início da linha. Esse é
 ### Opção C — Make ou VS Code
 
 - `make run` (requer GNU Make; executa o mesmo comando da opção A).
-- VS Code: *Run and Debug* → **SecurePass: servidor web** → F5 (seção 15), que usa o interpretador do `.venv`.
+- VS Code: *Run and Debug* → **SecurePass: servidor web** → F5, após criar o `.vscode/launch.json` da seção 15.
 
 ### Observações
 
@@ -481,10 +480,59 @@ Variáveis podem ser sobrescritas: `make run PORT=9000`, `make install PYTHON=py
 
 1. Abra a pasta do projeto no VS Code (`code .`).
 2. Instale as extensões recomendadas: **Python**, **Black Formatter** (`ms-python.black-formatter`) e **Ruff** (`charliermarsh.ruff`).
-3. Crie o ambiente e instale as dependências (seção 8). `.vscode/settings.json` já aponta o interpretador para `.venv`; se necessário, use *Ctrl+Shift+P → Python: Select Interpreter*.
-4. **Executar/depurar**: aba *Run and Debug* (Ctrl+Shift+D) → escolha **SecurePass: servidor web** ou **SecurePass: CLI** → F5.
-5. **Testes**: aba *Testing* (ícone de frasco), já configurada para Pytest.
-6. Formatação com Black e correções do Ruff são aplicadas ao salvar arquivos Python.
+3. Crie o ambiente e instale as dependências (seção 8). Selecione o interpretador do `.venv` com *Ctrl+Shift+P → Python: Select Interpreter*.
+4. **Opcional — configurações do projeto.** A pasta `.vscode/` não é versionada (preferências locais). Para ter os atalhos de execução, testes e formatação ao salvar, crie os dois arquivos abaixo:
+
+   `.vscode/launch.json`:
+
+   ```json
+   {
+     "version": "0.2.0",
+     "configurations": [
+       {
+         "name": "SecurePass: servidor web",
+         "type": "debugpy",
+         "request": "launch",
+         "module": "uvicorn",
+         "args": ["app.main:app", "--reload", "--host", "127.0.0.1", "--port", "8000"],
+         "jinja": true,
+         "justMyCode": true
+       },
+       {
+         "name": "SecurePass: CLI",
+         "type": "debugpy",
+         "request": "launch",
+         "module": "app.cli",
+         "args": ["--length", "20", "--uppercase", "--lowercase", "--numbers", "--symbols", "--count", "3"],
+         "console": "integratedTerminal"
+       }
+     ]
+   }
+   ```
+
+   `.vscode/settings.json` (no Linux/macOS, use `.venv/bin/python`):
+
+   ```json
+   {
+     "python.defaultInterpreterPath": "${workspaceFolder}/.venv/Scripts/python.exe",
+     "python.testing.pytestEnabled": true,
+     "python.testing.unittestEnabled": false,
+     "python.testing.pytestArgs": ["tests"],
+     "[python]": {
+       "editor.defaultFormatter": "ms-python.black-formatter",
+       "editor.formatOnSave": true,
+       "editor.codeActionsOnSave": {
+         "source.fixAll.ruff": "explicit",
+         "source.organizeImports.ruff": "explicit"
+       }
+     },
+     "files.eol": "\n"
+   }
+   ```
+
+5. **Executar/depurar**: aba *Run and Debug* (Ctrl+Shift+D) → escolha **SecurePass: servidor web** ou **SecurePass: CLI** → F5.
+6. **Testes**: aba *Testing* (ícone de frasco), configurada para Pytest pelo `settings.json`.
+7. Com o `settings.json`, a formatação com Black e as correções do Ruff são aplicadas ao salvar arquivos Python.
 
 ## 16. Segurança das senhas
 
@@ -562,6 +610,8 @@ feat(core): add option to exclude ambiguous characters
 feat(ui): apply AKCIT identity, one-page layout and usability improvements
 docs: document web usage with screenshots and new options
 docs: credit the author in the README
+docs: format README tables and remove unfilled placeholders
+chore: stop tracking VS Code settings
 ```
 
 Use `git log --oneline` para conferir.
