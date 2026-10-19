@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta name="description" content="Gerador de senhas aleatórias e criptograficamente seguras.">
+  <title>SecurePass — Gerador de Senhas Seguras</title>
+  <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
+  <script src="{{ url_for('static', path='js/script.js') }}" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <h1>SecurePass</h1>
+    <p>Gerador de senhas aleatórias e criptograficamente seguras.</p>
+  </header>
+
+  <main class="container">
+    <noscript>
+      <p class="message message--error">
+        Esta página precisa de JavaScript. Como alternativa, use a CLI:
+        <code>python -m app.cli --help</code>.
+      </p>
+    </noscript>
+
+    <section class="card" aria-labelledby="options-title">
+      <h2 id="options-title">Opções</h2>
+
+      <form id="generator-form" method="post" novalidate autocomplete="off">
+        <div class="field">
+          <label for="length">Comprimento da senha</label>
+          <div class="range-row">
+            <input type="range" id="length-range" min="{{ min_length }}" max="{{ max_length }}"
+                   value="{{ default_length }}" aria-label="Comprimento (controle deslizante)"
+                   aria-controls="length">
+            <input type="number" id="length" name="length" min="{{ min_length }}"
+                   max="{{ max_length }}" value="{{ default_length }}" step="1" required
+                   inputmode="numeric" aria-describedby="length-hint">
+          </div>
+          <small id="length-hint">Entre {{ min_length }} e {{ max_length }} caracteres.</small>
+        </div>
+
+        <fieldset class="field">
+          <legend>Caracteres incluídos</legend>
+          {% for category in categories %}
+          <label class="checkbox">
+            <input type="checkbox" name="{{ category.name }}" checked
+                   data-pool-size="{{ category.characters | length }}">
+            <span>{{ category.label }} <code>{{ category.characters }}</code></span>
+          </label>
+          {% endfor %}
+        </fieldset>
+
+        <div class="field">
+          <label for="count">Quantidade de senhas</label>
+          <input type="number" id="count" name="count" min="{{ min_count }}"
+                 max="{{ max_count }}" value="{{ default_count }}" step="1" required
+                 inputmode="numeric" aria-describedby="count-hint">
+          <small id="count-hint">Entre {{ min_count }} e {{ max_count }} senhas.</small>
+        </div>
+
+        <div class="strength" aria-live="polite">
+          <div class="strength__label">
+            <span>Entropia estimada</span>
+            <strong id="entropy-value">—</strong>
+          </div>
+          <meter id="entropy-meter" min="0" max="128" low="60" high="80" optimum="128"
+                 value="0" aria-labelledby="entropy-value"></meter>
+          <small>
+            Estimativa matemática (comprimento × log₂ do total de caracteres possíveis).
+            Não é garantia contra ataques.
+          </small>
+        </div>
+
+        <p id="form-message" class="message" role="alert" hidden></p>
+
+        <button type="submit" class="button button--primary" id="generate-button">
+          Gerar senhas
+        </button>
+      </form>
+    </section>
+
+    <section class="card" id="results" aria-labelledby="results-title" hidden>
+      <div class="results__header">
+        <h2 id="results-title">Senhas geradas</h2>
+        <button type="button" class="button" id="regenerate-button">Gerar novas senhas</button>
+      </div>
+      <ul id="password-list" class="password-list"></ul>
+      <p class="notice">
+        As senhas são exibidas apenas nesta página e não são armazenadas. Ao copiar,
+        lembre-se de que a área de transferência pode ser lida por outros programas.
+      </p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Projeto acadêmico · <a href="/docs">Documentação da API</a></p>
+  </footer>
+</body>
+</html>
