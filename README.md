@@ -62,33 +62,33 @@ Senhas criadas por pessoas tendem a ser curtas, previsíveis e reutilizadas. Mui
 
 ## 3. Funcionalidades
 
-| Requisito | Descrição | Onde |
-|---|---|---|
-| RF01 | Comprimento de 8 a 128 (padrão 16), com validação | `app/core/constants.py`, `password_generator.py` |
-| RF02–RF05 | Maiúsculas, minúsculas, números e símbolos `!@#$%&*()-_=+` | `app/core/constants.py` |
-| RF06 | Ao menos um caractere por categoria marcada; nenhum de desmarcadas | `generate_password` |
-| RF07 | `secrets.choice` + Fisher–Yates com `secrets.randbelow` | `generate_password`, `secure_shuffle` |
-| RF08 | 1 a 10 senhas por solicitação | `generate_passwords` |
-| RF09 | Interface web responsiva, cópia, regeneração, validação e indicador de entropia | `app/templates`, `app/static` |
-| RF10 | CLI com mensagens claras e códigos de saída | `app/cli.py` |
-| RF11 | `POST /api/v1/passwords/generate` com validação Pydantic | `app/api/routes.py`, `app/schemas/password.py` |
-| Extra | Opção de excluir caracteres ambíguos `0 O 1 l I` (web, API e CLI) | `AMBIGUOUS_CHARACTERS`, `select_character_sets(exclude_ambiguous=...)` |
-| Extra | Perfis rápidos, ocultar/limpar senhas, cores por tipo de caractere, tema manual, dicas por nível de entropia | `app/main.py` (`PRESETS`), `app/templates`, `app/static` |
+| Requisito  | Descrição                                                                                                    | Onde                                                                       |
+| ---------- | -------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| RF01       | Comprimento de 8 a 128 (padrão 16), com validação                                                           | `app/core/constants.py`, `password_generator.py`                       |
+| RF02–RF05 | Maiúsculas, minúsculas, números e símbolos `!@#$%&*()-_=+`                                               | `app/core/constants.py`                                                  |
+| RF06       | Ao menos um caractere por categoria marcada; nenhum de desmarcadas                                             | `generate_password`                                                      |
+| RF07       | `secrets.choice` + Fisher–Yates com `secrets.randbelow`                                                   | `generate_password`, `secure_shuffle`                                  |
+| RF08       | 1 a 10 senhas por solicitação                                                                                | `generate_passwords`                                                     |
+| RF09       | Interface web responsiva, cópia, regeneração, validação e indicador de entropia                           | `app/templates`, `app/static`                                          |
+| RF10       | CLI com mensagens claras e códigos de saída                                                                  | `app/cli.py`                                                             |
+| RF11       | `POST /api/v1/passwords/generate` com validação Pydantic                                                   | `app/api/routes.py`, `app/schemas/password.py`                         |
+| Extra      | Opção de excluir caracteres ambíguos `0 O 1 l I` (web, API e CLI)                                         | `AMBIGUOUS_CHARACTERS`, `select_character_sets(exclude_ambiguous=...)` |
+| Extra      | Perfis rápidos, ocultar/limpar senhas, cores por tipo de caractere, tema manual, dicas por nível de entropia | `app/main.py` (`PRESETS`), `app/templates`, `app/static`           |
 
 ## 4. Tecnologias
 
-| Camada | Tecnologia | Versão fixada |
-|---|---|---|
-| Linguagem | Python | 3.12+ (validado em 3.13.5) |
-| Backend web | FastAPI | 0.147.0 |
-| Servidor ASGI | Uvicorn | 0.54.0 |
-| Templates | Jinja2 | 3.1.6 |
-| Frontend | HTML5, CSS3, JavaScript (sem frameworks) | — |
-| Testes | Pytest / pytest-cov | 9.1.1 / 7.1.0 |
-| Testes da API | HTTPX (via `TestClient`) | 0.28.1 |
-| Formatação | Black | 26.10.1 |
-| Análise estática | Ruff (inclui regras de segurança Bandit e docstrings) | 0.17.1 |
-| Automação | GNU Make | — |
+| Camada             | Tecnologia                                             | Versão fixada             |
+| ------------------ | ------------------------------------------------------ | -------------------------- |
+| Linguagem          | Python                                                 | 3.12+ (validado em 3.13.5) |
+| Backend web        | FastAPI                                                | 0.147.0                    |
+| Servidor ASGI      | Uvicorn                                                | 0.54.0                     |
+| Templates          | Jinja2                                                 | 3.1.6                      |
+| Frontend           | HTML5, CSS3, JavaScript (sem frameworks)               | —                         |
+| Testes             | Pytest / pytest-cov                                    | 9.1.1 / 7.1.0              |
+| Testes da API      | HTTPX (via `TestClient`)                             | 0.28.1                     |
+| Formatação       | Black                                                  | 26.10.1                    |
+| Análise estática | Ruff (inclui regras de segurança Bandit e docstrings) | 0.17.1                     |
+| Automação        | GNU Make                                               | —                         |
 
 Nenhum banco de dados, autenticação ou serviço externo é utilizado.
 
@@ -180,11 +180,11 @@ python -m venv .venv
 
 Ative o ambiente virtual:
 
-| Sistema | Comando |
-|---|---|
+| Sistema              | Comando                          |
+| -------------------- | -------------------------------- |
 | Windows (PowerShell) | `.\.venv\Scripts\Activate.ps1` |
-| Windows (cmd) | `.venv\Scripts\activate.bat` |
-| Linux/macOS | `source .venv/bin/activate` |
+| Windows (cmd)        | `.venv\Scripts\activate.bat`   |
+| Linux/macOS          | `source .venv/bin/activate`    |
 
 > No PowerShell, se a ativação for bloqueada pela política de execução, rode antes (vale apenas para a sessão atual):
 > `Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned`
@@ -205,11 +205,11 @@ Sempre a partir da raiz do projeto (pasta `GeradorSenhas`), depois de concluir a
 
 Ative o `.venv` e inicie o servidor com o Python do ambiente:
 
-| Sistema | Comandos |
-|---|---|
-| Windows (PowerShell) | `.\.venv\Scripts\Activate.ps1`<br>`python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000` |
-| Windows (cmd) | `.venv\Scripts\activate.bat`<br>`python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000` |
-| Linux/macOS | `source .venv/bin/activate`<br>`python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000` |
+| Sistema | 1. Ativar o ambiente | 2. Iniciar o servidor |
+| --- | --- | --- |
+| Windows (PowerShell) | `.\.venv\Scripts\Activate.ps1` | `python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000` |
+| Windows (cmd) | `.venv\Scripts\activate.bat` | `python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000` |
+| Linux/macOS | `source .venv/bin/activate` | `python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000` |
 
 Com o ambiente ativado, o terminal mostra `(.venv)` no início da linha. Esse é o comando validado no Windows (PowerShell). Para sair do ambiente depois de encerrar o servidor, use `deactivate`.
 
@@ -241,9 +241,9 @@ Com o ambiente ativado, o terminal mostra `(.venv)` no início da linha. Esse é
 
 Com o servidor em execução:
 
-- Interface web: <http://127.0.0.1:8000/>
-- Documentação interativa (Swagger UI): <http://127.0.0.1:8000/docs>
-- Esquema OpenAPI: <http://127.0.0.1:8000/openapi.json>
+- Interface web: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
+- Documentação interativa (Swagger UI): [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+- Esquema OpenAPI: [http://127.0.0.1:8000/openapi.json](http://127.0.0.1:8000/openapi.json)
 
 ## 10. Uso pela web
 
@@ -256,16 +256,14 @@ Com o servidor em execução (seção 9):
 
 A interface é uma **página única em duas colunas**: as configurações ficam à esquerda e as senhas geradas à direita, sob uma barra superior compacta com o logo do AKCIT ao lado do nome SecurePass. Em notebooks e monitores (a partir de 1280×720) tudo cabe na janela, sem barra de rolagem; com 10 senhas longas, apenas a lista de senhas rola por dentro do cartão. Em telas estreitas (celular) as colunas se empilham e a página rola normalmente.
 
-1. Acesse <http://127.0.0.1:8000/>.
+1. Acesse [http://127.0.0.1:8000/](http://127.0.0.1:8000/).
 2. Opcional: escolha um **perfil rápido**, que preenche as opções em um clique (o perfil ativo fica marcado com ✓):
-
-   | Perfil | Configuração | Quando usar |
-   |---|---|---|
-   | Padrão | 16 caracteres, todas as categorias | Uso geral |
-   | Máxima segurança | 32 caracteres, todas as categorias | Contas críticas, senhas mestras |
-   | Sem símbolos | 20 caracteres, sem caracteres especiais | Sites que não aceitam símbolos |
-   | Fácil de digitar | 16 caracteres, sem `0 O 1 l I` | Senhas que serão lidas e digitadas em outro aparelho |
-
+   | Perfil             | Configuração                          | Quando usar                                           |
+   | ------------------ | --------------------------------------- | ----------------------------------------------------- |
+   | Padrão            | 16 caracteres, todas as categorias      | Uso geral                                             |
+   | Máxima segurança | 32 caracteres, todas as categorias      | Contas críticas, senhas mestras                      |
+   | Sem símbolos      | 20 caracteres, sem caracteres especiais | Sites que não aceitam símbolos                      |
+   | Fácil de digitar  | 16 caracteres, sem `0 O 1 l I`        | Senhas que serão lidas e digitadas em outro aparelho |
 3. Ajuste o comprimento (controle deslizante ou campo numérico, 8–128).
 4. Marque as categorias desejadas (pelo menos uma) e, se quiser, **Evitar caracteres ambíguos**.
 5. Defina a quantidade de senhas (1–10).
@@ -300,33 +298,33 @@ Capturas feitas com a aplicação em execução (`python -m uvicorn app.main:app
 
 <p align="center">
   <img src="docs/img/04-tema-escuro.png" alt="Página no tema escuro com senhas geradas" width="460">
-  &nbsp;
+   
   <img src="docs/img/05-celular.png" alt="Página em tela de celular de 375 pixels com duas senhas geradas" width="190">
 </p>
 
 ### Boas práticas de usabilidade e acessibilidade
 
-| Prática | Como foi aplicada |
-|---|---|
-| Erros junto ao campo | Cada campo tem sua mensagem (⚠) ligada por `aria-describedby`; a borda do campo fica destacada (`aria-invalid`). |
-| Foco no problema | Ao enviar com erros, o foco vai para o primeiro campo inválido. |
-| Validação sem incomodar | Os erros só aparecem após a primeira tentativa de envio; a partir daí somem assim que o valor é corrigido. |
-| Feedback de estado | Botão mostra "Gerando…"; a lista fica esmaecida durante a requisição (`aria-busy`); cópia confirma com "Copiado!". |
-| Leitores de tela | Região `role="status"` anuncia "3 senhas geradas", "Senha 2 copiada", "Opções restauradas" etc. |
-| Foco após a ação | Depois de gerar, o foco e a rolagem vão para "Senhas geradas"; ao regenerar, o foco permanece no botão usado. |
-| Botões não perdem o foco | Durante o carregamento usa-se `aria-disabled` em vez de `disabled`, que tiraria o foco do teclado. |
-| Controle e liberdade | Botão **Restaurar padrões**; os valores padrão já produzem senhas fortes (texto de orientação no topo do formulário). |
-| Cópia facilitada | **Copiar todas**; um clique na senha seleciona o texto inteiro; se a área de transferência não estiver disponível (fora de HTTPS/localhost), o texto é selecionado e a página orienta a usar Ctrl+C. |
-| Navegação por teclado | Link "Pular para o gerador" visível ao pressionar Tab; foco sempre visível (`:focus-visible`). |
-| Página única | Duas colunas (configurações → resultado) que cabem na janela de notebooks e monitores, sem rolagem da página; a pessoa vê as opções e as senhas ao mesmo tempo. A área de resultado mostra uma orientação enquanto está vazia. |
-| Alvos de clique e toque | Botões, campos e caixas de seleção com no mínimo 36 px com mouse (acima dos 24 px da WCAG 2.5.8) e 44 px em telas de toque (`pointer: coarse`); no celular os botões ocupam a largura toda. |
-| Movimento reduzido | Com `prefers-reduced-motion`, a rolagem é instantânea e não há animações. |
-| Legibilidade | Senhas em fonte monoespaçada maior, com espaçamento entre letras e **cores por tipo de caractere** (com legenda). |
-| Atalhos para tarefas comuns | **Perfis rápidos** aplicam combinações frequentes em um clique; o perfil que corresponde às opções atuais fica destacado (`aria-pressed`). |
-| Prevenção de erros | **Evitar caracteres ambíguos** (`0 O 1 l I`) para senhas que serão digitadas manualmente; a entropia é recalculada com o conjunto menor. |
-| Orientação contextual | A etiqueta de entropia muda de cor por nível e uma dica explica o uso adequado ("Para contas importantes, prefira 80 bits ou mais"). |
-| Privacidade na tela | **Ocultar senhas** (útil ao compartilhar a tela; a cópia continua funcionando e o estado vale também para novos lotes) e **Limpar senhas** ao terminar. |
-| Preferência visual | Botão de tema **Automático / Claro / Escuro** na barra superior. A escolha vale para a visita atual: a página não grava nada no navegador (ver seção 16). |
+| Prática                    | Como foi aplicada                                                                                                                                                                                                                         |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Erros junto ao campo        | Cada campo tem sua mensagem (⚠) ligada por `aria-describedby`; a borda do campo fica destacada (`aria-invalid`).                                                                                                                     |
+| Foco no problema            | Ao enviar com erros, o foco vai para o primeiro campo inválido.                                                                                                                                                                          |
+| Validação sem incomodar   | Os erros só aparecem após a primeira tentativa de envio; a partir daí somem assim que o valor é corrigido.                                                                                                                            |
+| Feedback de estado          | Botão mostra "Gerando…"; a lista fica esmaecida durante a requisição (`aria-busy`); cópia confirma com "Copiado!".                                                                                                                 |
+| Leitores de tela            | Região `role="status"` anuncia "3 senhas geradas", "Senha 2 copiada", "Opções restauradas" etc.                                                                                                                                      |
+| Foco após a ação         | Depois de gerar, o foco e a rolagem vão para "Senhas geradas"; ao regenerar, o foco permanece no botão usado.                                                                                                                           |
+| Botões não perdem o foco  | Durante o carregamento usa-se `aria-disabled` em vez de `disabled`, que tiraria o foco do teclado.                                                                                                                                    |
+| Controle e liberdade        | Botão **Restaurar padrões**; os valores padrão já produzem senhas fortes (texto de orientação no topo do formulário).                                                                                                        |
+| Cópia facilitada           | **Copiar todas**; um clique na senha seleciona o texto inteiro; se a área de transferência não estiver disponível (fora de HTTPS/localhost), o texto é selecionado e a página orienta a usar Ctrl+C.                          |
+| Navegação por teclado     | Link "Pular para o gerador" visível ao pressionar Tab; foco sempre visível (`:focus-visible`).                                                                                                                                        |
+| Página única              | Duas colunas (configurações → resultado) que cabem na janela de notebooks e monitores, sem rolagem da página; a pessoa vê as opções e as senhas ao mesmo tempo. A área de resultado mostra uma orientação enquanto está vazia. |
+| Alvos de clique e toque     | Botões, campos e caixas de seleção com no mínimo 36 px com mouse (acima dos 24 px da WCAG 2.5.8) e 44 px em telas de toque (`pointer: coarse`); no celular os botões ocupam a largura toda.                                        |
+| Movimento reduzido          | Com `prefers-reduced-motion`, a rolagem é instantânea e não há animações.                                                                                                                                                         |
+| Legibilidade                | Senhas em fonte monoespaçada maior, com espaçamento entre letras e **cores por tipo de caractere** (com legenda).                                                                                                                 |
+| Atalhos para tarefas comuns | **Perfis rápidos** aplicam combinações frequentes em um clique; o perfil que corresponde às opções atuais fica destacado (`aria-pressed`).                                                                                  |
+| Prevenção de erros        | **Evitar caracteres ambíguos** (`0 O 1 l I`) para senhas que serão digitadas manualmente; a entropia é recalculada com o conjunto menor.                                                                                       |
+| Orientação contextual     | A etiqueta de entropia muda de cor por nível e uma dica explica o uso adequado ("Para contas importantes, prefira 80 bits ou mais").                                                                                                     |
+| Privacidade na tela         | **Ocultar senhas** (útil ao compartilhar a tela; a cópia continua funcionando e o estado vale também para novos lotes) e **Limpar senhas** ao terminar.                                                                    |
+| Preferência visual         | Botão de tema **Automático / Claro / Escuro** na barra superior. A escolha vale para a visita atual: a página não grava nada no navegador (ver seção 16).                                                                     |
 
 Essas práticas foram verificadas com um teste E2E descartável no Microsoft Edge headless (via Chrome DevTools Protocol), cobrindo erros inline, foco, anúncios, restaurar padrões, copiar todas (incluindo o caminho alternativo), perfis rápidos, exclusão de ambíguos em 10 senhas de 128 caracteres, cores por tipo, ocultar/mostrar, limpar, os três temas (inclusive "Claro" sobrepondo o sistema escuro), ausência de rolagem horizontal em 375 px, altura mínima dos alvos de toque e ausência de erros no console.
 
@@ -334,21 +332,21 @@ Essas práticas foram verificadas com um teste E2E descartável no Microsoft Edg
 
 A interface segue o esquema de cores e o logotipo do [AKCIT — Centro de Competência EMBRAPII em Tecnologias Imersivas](https://akcit.ufg.br/):
 
-| Uso | Cor | Origem no site do AKCIT |
-|---|---|---|
-| Barra superior e rodapé (degradê) | `#19032B` → `#431980` | Fundo roxo-escuro do site |
-| Cor primária (botões, títulos, controles) | `#431980` (claro) / `#BC5AFF` (escuro) | Roxo e lilás de destaque |
-| Detalhe dos cartões | `#278CFD` | Azul de destaque |
-| Fundo da página | `#F8EFFF` (claro) / `#19032B` (escuro) | Tons de fundo do site |
-| Fonte | Montserrat (se instalada; senão, fonte do sistema) | Fonte do site |
+| Uso                                          | Cor                                                 | Origem no site do AKCIT   |
+| -------------------------------------------- | --------------------------------------------------- | ------------------------- |
+| Barra superior e rodapé (degradê)          | `#19032B` → `#431980`                          | Fundo roxo-escuro do site |
+| Cor primária (botões, títulos, controles) | `#431980` (claro) / `#BC5AFF` (escuro)          | Roxo e lilás de destaque |
+| Detalhe dos cartões                         | `#278CFD`                                         | Azul de destaque          |
+| Fundo da página                             | `#F8EFFF` (claro) / `#19032B` (escuro)          | Tons de fundo do site     |
+| Fonte                                        | Montserrat (se instalada; senão, fonte do sistema) | Fonte do site             |
 
-Imagens baixadas de <https://akcit.ufg.br/> e salvas em `app/static/img/`:
+Imagens baixadas de [https://akcit.ufg.br/](https://akcit.ufg.br/) e salvas em `app/static/img/`:
 
-| Arquivo | Original no site | Uso | Tratamento |
-|---|---|---|---|
+| Arquivo                   | Original no site         | Uso                                                             | Tratamento                       |
+| ------------------------- | ------------------------ | --------------------------------------------------------------- | -------------------------------- |
 | `logo-akcit-branca.png` | `/logoAkcitBranca.png` | Barra superior, à esquerda de "SecurePass" (link para o AKCIT) | Recortado e reduzido para 480 px |
-| `logo-akcit.png` | `/logoAkcit.png` | Topo deste README | Recortado e reduzido para 480 px |
-| `favicon.ico` | `/favicon.ico` | Ícone da aba do navegador | Sem alteração |
+| `logo-akcit.png`        | `/logoAkcit.png`       | Topo deste README                                               | Recortado e reduzido para 480 px |
+| `favicon.ico`           | `/favicon.ico`         | Ícone da aba do navegador                                      | Sem alteração                  |
 
 - As imagens são **servidas localmente** porque a CSP da página só permite recursos da própria origem (`img-src 'self'`); pelo mesmo motivo a fonte Montserrat não é carregada de CDN.
 - Os temas claro e escuro acompanham a preferência do sistema operacional (`prefers-color-scheme`), e o botão de tema permite escolher manualmente.
@@ -365,10 +363,10 @@ python -m app.cli --help
 
 Cada senha é impressa em uma linha (stdout). Erros vão para stderr.
 
-| Código de saída | Significado |
-|---|---|
-| `0` | Senhas geradas com sucesso (ou `--help`) |
-| `2` | Argumentos inválidos: valor fora da faixa, nenhuma categoria, valor não inteiro ou opção desconhecida |
+| Código de saída | Significado                                                                                               |
+| ----------------- | --------------------------------------------------------------------------------------------------------- |
+| `0`             | Senhas geradas com sucesso (ou `--help`)                                                                |
+| `2`             | Argumentos inválidos: valor fora da faixa, nenhuma categoria, valor não inteiro ou opção desconhecida |
 
 Exemplo de erro:
 
@@ -385,24 +383,24 @@ Não há categorias marcadas por padrão na CLI: a seleção deve ser explícita
 
 `POST /api/v1/passwords/generate` — corpo JSON (todos os campos são opcionais):
 
-| Campo | Tipo | Padrão | Regra |
-|---|---|---|---|
-| `length` | inteiro | 16 | 8 a 128 |
-| `uppercase` | booleano | `true` | — |
-| `lowercase` | booleano | `true` | — |
-| `numbers` | booleano | `true` | — |
-| `symbols` | booleano | `true` | — |
+| Campo                 | Tipo     | Padrão   | Regra                                      |
+| --------------------- | -------- | --------- | ------------------------------------------ |
+| `length`            | inteiro  | 16        | 8 a 128                                    |
+| `uppercase`         | booleano | `true`  | —                                         |
+| `lowercase`         | booleano | `true`  | —                                         |
+| `numbers`           | booleano | `true`  | —                                         |
+| `symbols`           | booleano | `true`  | —                                         |
 | `exclude_ambiguous` | booleano | `false` | Remove `0 O 1 l I` de todos os conjuntos |
-| `count` | inteiro | 1 | 1 a 10 |
+| `count`             | inteiro  | 1         | 1 a 10                                     |
 
 Validação em **modo estrito**: `"16"` (texto), `16.0`/`16.5` (decimais) e `"yes"` (booleano em texto) são rejeitados; campos desconhecidos também.
 
-| Status | Quando | Corpo |
-|---|---|---|
-| `200` | Sucesso | `{"passwords": [...], "length": n, "count": n}` |
-| `422` | Erro de tipo/faixa/campo extra (Pydantic) | `{"detail": [ {...}, ... ]}` (lista de erros) |
+| Status  | Quando                                            | Corpo                                                               |
+| ------- | ------------------------------------------------- | ------------------------------------------------------------------- |
+| `200` | Sucesso                                           | `{"passwords": [...], "length": n, "count": n}`                   |
+| `422` | Erro de tipo/faixa/campo extra (Pydantic)         | `{"detail": [ {...}, ... ]}` (lista de erros)                     |
 | `422` | Nenhuma categoria selecionada (regra de negócio) | `{"detail": "Selecione pelo menos uma categoria de caracteres."}` |
-| `405` | Método diferente de POST | — |
+| `405` | Método diferente de POST                         | —                                                                  |
 
 ### Exemplos
 
@@ -467,13 +465,13 @@ Resultado da última execução (Windows 11, Python 3.13.5): **130 testes aprova
 
 ## 14. Comandos do Makefile
 
-| Comando | Ação | Equivalente manual (Windows sem Make) |
-|---|---|---|
-| `make install` | Instala as dependências | `python -m pip install -r requirements.txt` |
-| `make run` | Inicia o Uvicorn com recarga automática | `python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000` |
-| `make test` | Executa os testes com cobertura | `python -m pytest --cov --cov-report=term-missing` |
-| `make format` | Formata o código com Black | `python -m black app tests` |
-| `make lint` | Ruff + verificação de formatação | `python -m ruff check app tests` e `python -m black --check app tests` |
+| Comando          | Ação                                   | Equivalente manual (Windows sem Make)                                      |
+| ---------------- | ---------------------------------------- | -------------------------------------------------------------------------- |
+| `make install` | Instala as dependências                 | `python -m pip install -r requirements.txt`                              |
+| `make run`     | Inicia o Uvicorn com recarga automática | `python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000`   |
+| `make test`    | Executa os testes com cobertura          | `python -m pytest --cov --cov-report=term-missing`                       |
+| `make format`  | Formata o código com Black              | `python -m black app tests`                                              |
+| `make lint`    | Ruff + verificação de formatação     | `python -m ruff check app tests` e `python -m black --check app tests` |
 
 Variáveis podem ser sobrescritas: `make run PORT=9000`, `make install PYTHON=python3`.
 
@@ -513,18 +511,18 @@ Limitações desse indicador:
 
 ### Proteções da aplicação
 
-| Medida | Implementação |
-|---|---|
-| Nenhum registro em log | Não há logs da aplicação; o log de acesso do Uvicorn registra apenas método, caminho e status. Senhas trafegam só no corpo da resposta. |
-| Nenhuma persistência | Sem banco de dados ou arquivos; o JS não usa `localStorage`, `sessionStorage` ou cookies (verificado no teste E2E). |
-| Sem senhas na URL | Geração via `POST` com JSON; nenhum parâmetro de consulta. |
-| Sem cache | `Cache-Control: no-store, no-cache, must-revalidate, max-age=0`, `Pragma: no-cache`, `Expires: 0` em todas as respostas; `fetch` com `cache: "no-store"`. |
-| Inserção segura no HTML | Jinja2 com autoescape; no JS, senhas entram no DOM só via `textContent`. |
-| CSP | `default-src 'self'`, sem scripts inline, `frame-ancestors 'none'`, `object-src 'none'`, `base-uri 'none'`. A Swagger UI (`/docs`) fica fora da CSP porque depende de CDN e scripts inline. |
-| Outros cabeçalhos | `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: no-referrer`. |
-| Documentação sem senhas reais | Exemplos do OpenAPI usam asteriscos (`****************`); ReDoc desativado. |
-| Sem monitoramento | Nenhuma ferramenta de telemetria configurada. Observação: o FastAPI 0.147 instala `opentelemetry-api` como dependência transitiva; sem SDK e exportador configurados, ela não coleta nem envia dados. |
-| Área de transferência | O botão copiar usa `navigator.clipboard`; a página avisa que outros programas podem ler a área de transferência. |
+| Medida                          | Implementação                                                                                                                                                                                             |
+| ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Nenhum registro em log          | Não há logs da aplicação; o log de acesso do Uvicorn registra apenas método, caminho e status. Senhas trafegam só no corpo da resposta.                                                               |
+| Nenhuma persistência           | Sem banco de dados ou arquivos; o JS não usa `localStorage`, `sessionStorage` ou cookies (verificado no teste E2E).                                                                                    |
+| Sem senhas na URL               | Geração via `POST` com JSON; nenhum parâmetro de consulta.                                                                                                                                             |
+| Sem cache                       | `Cache-Control: no-store, no-cache, must-revalidate, max-age=0`, `Pragma: no-cache`, `Expires: 0` em todas as respostas; `fetch` com `cache: "no-store"`.                                         |
+| Inserção segura no HTML       | Jinja2 com autoescape; no JS, senhas entram no DOM só via `textContent`.                                                                                                                                 |
+| CSP                             | `default-src 'self'`, sem scripts inline, `frame-ancestors 'none'`, `object-src 'none'`, `base-uri 'none'`. A Swagger UI (`/docs`) fica fora da CSP porque depende de CDN e scripts inline.       |
+| Outros cabeçalhos              | `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: no-referrer`.                                                                                                           |
+| Documentação sem senhas reais | Exemplos do OpenAPI usam asteriscos (`****************`); ReDoc desativado.                                                                                                                               |
+| Sem monitoramento               | Nenhuma ferramenta de telemetria configurada. Observação: o FastAPI 0.147 instala `opentelemetry-api` como dependência transitiva; sem SDK e exportador configurados, ela não coleta nem envia dados. |
+| Área de transferência         | O botão copiar usa `navigator.clipboard`; a página avisa que outros programas podem ler a área de transferência.                                                                                      |
 
 ## 17. Limitações
 
@@ -570,24 +568,24 @@ Use `git log --oneline` para conferir.
 
 ## 20. Checklist de verificação
 
-| Critério | Status | Evidência |
-|---|---|---|
-| Funcionalidades RF01–RF11 implementadas | ✅ | Seção 3; testes em `tests/` |
-| Aleatoriedade segura (`secrets`) | ✅ | `test_generation_uses_secrets_choice_and_randbelow`, `test_secure_shuffle_implements_fisher_yates_with_randbelow` |
-| Categorias respeitadas | ✅ | `test_respects_selected_and_excluded_categories`, `test_all_categories_are_present_when_all_selected` |
-| Interface web funcional | ✅ | Teste E2E no Edge headless: geração, regeneração, cópia, validações, indicador |
-| Servidor iniciado pelo desenvolvedor | ✅ | `python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000` |
-| Identidade visual AKCIT (cores, logo e imagens) | ✅ | Seção 10; capturas no Edge headless nos temas claro e escuro |
-| Boas práticas de usabilidade | ✅ | Seção 10; teste E2E descartável no Edge headless (desktop e 375 px) |
-| Perfis, ambíguos, ocultar/limpar, cores, tema, dicas de entropia | ✅ | Seção 10; 33 verificações E2E no Edge headless; testes em `tests/` |
-| Endpoint da API | ✅ | `tests/test_api.py`; teste manual com Uvicorn real |
-| CLI independente da web | ✅ | `tests/test_cli.py`; execução real `python -m app.cli` |
-| Testes aprovados | ✅ | 130 aprovados |
-| Black e Ruff sem apontamentos | ✅ | `black --check` e `ruff check` sem erros |
-| Docstrings em funções/classes públicas | ✅ | Regras `D` do Ruff (convenção Google) ativas para `app/` |
-| Sem persistência de senhas | ✅ | Seção 16 |
-| `make` executado | ⚠️ Não verificado | GNU Make indisponível no ambiente; comandos manuais equivalentes executados |
-| Revisão humana do código | ☐ | **[A PREENCHER PELO DESENVOLVEDOR]** |
+| Critério                                                         | Status               | Evidência                                                                                                            |
+| ----------------------------------------------------------------- | -------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Funcionalidades RF01–RF11 implementadas                          | ✅                   | Seção 3; testes em `tests/`                                                                                       |
+| Aleatoriedade segura (`secrets`)                                | ✅                   | `test_generation_uses_secrets_choice_and_randbelow`, `test_secure_shuffle_implements_fisher_yates_with_randbelow` |
+| Categorias respeitadas                                            | ✅                   | `test_respects_selected_and_excluded_categories`, `test_all_categories_are_present_when_all_selected`             |
+| Interface web funcional                                           | ✅                   | Teste E2E no Edge headless: geração, regeneração, cópia, validações, indicador                                 |
+| Servidor iniciado pelo desenvolvedor                              | ✅                   | `python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000`                                              |
+| Identidade visual AKCIT (cores, logo e imagens)                   | ✅                   | Seção 10; capturas no Edge headless nos temas claro e escuro                                                        |
+| Boas práticas de usabilidade                                     | ✅                   | Seção 10; teste E2E descartável no Edge headless (desktop e 375 px)                                                |
+| Perfis, ambíguos, ocultar/limpar, cores, tema, dicas de entropia | ✅                   | Seção 10; 33 verificações E2E no Edge headless; testes em `tests/`                                              |
+| Endpoint da API                                                   | ✅                   | `tests/test_api.py`; teste manual com Uvicorn real                                                                  |
+| CLI independente da web                                           | ✅                   | `tests/test_cli.py`; execução real `python -m app.cli`                                                          |
+| Testes aprovados                                                  | ✅                   | 130 aprovados                                                                                                         |
+| Black e Ruff sem apontamentos                                     | ✅                   | `black --check` e `ruff check` sem erros                                                                          |
+| Docstrings em funções/classes públicas                         | ✅                   | Regras `D` do Ruff (convenção Google) ativas para `app/`                                                        |
+| Sem persistência de senhas                                       | ✅                   | Seção 16                                                                                                            |
+| `make` executado                                                | ⚠️ Não verificado | GNU Make indisponível no ambiente; comandos manuais equivalentes executados                                          |
+| Revisão humana do código                                        | ☐                   | **[A PREENCHER PELO DESENVOLVEDOR]**                                                                            |
 
 ## 21. Licença
 
@@ -600,7 +598,6 @@ Distribuído sob a licença MIT. Consulte [LICENSE](LICENSE).
 ### Ferramentas utilizadas
 
 - **Claude Code** (CLI da Anthropic), com o modelo **Claude Opus 5.5**, operando diretamente no repositório: criou arquivos, executou testes, ferramentas de qualidade e commits.
-- Outras ferramentas: **[A PREENCHER PELO DESENVOLVEDOR, se houver]**
 
 ### Como a IA foi utilizada
 
@@ -626,13 +623,7 @@ Ocorridos de fato durante o desenvolvimento:
 8. **Logo bloqueado pela CSP (evitado)**: carregar a imagem diretamente de `akcit.ufg.br` violaria `img-src 'self'`. Solução: copiar o logo para `app/static/img/` e testar que a página o referencia localmente.
 9. **Foco perdido ao regenerar**: desabilitar o botão "Gerar novas senhas" (`disabled`) durante a requisição fazia o foco do teclado voltar ao início da página. Encontrado no teste E2E. Solução: `aria-disabled` com proteção contra cliques repetidos.
 
-Outros problemas percebidos pelo desenvolvedor: **[A PREENCHER PELO DESENVOLVEDOR]**
-
-### Decisões revisadas pelo desenvolvedor
-
-- **[A PREENCHER PELO DESENVOLVEDOR]**: ex.: concordância com o uso de funções em vez de classes, com os padrões da API (todas as categorias `true`) versus a CLI (nenhuma por padrão), com a exclusão da CSP para `/docs`.
-
-### Limitações das sugestões da IA
+###  Limitações das sugestões da IA
 
 - A IA pode produzir código plausível porém incorreto. Os dois bugs acima foram introduzidos pela própria IA e só foram detectados por **execução real**, não por leitura.
 - Escolhas de projeto (limites de entropia, padrões da CLI, textos da interface) são sugestões razoáveis, não requisitos validados com usuários.
